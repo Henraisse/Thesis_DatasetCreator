@@ -17,7 +17,7 @@ public class Main {
 		DataProcess process = new DataProcess();		
 		ParamFrame frame = new ParamFrame(process);
 		
-		
+		//added committed comment
 	}
 
 
