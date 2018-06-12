@@ -1,0 +1,68 @@
+############ EVENT FILES ############
+\events\Besiktningsklass.csv
+\events\Spårriktning.csv
+
+############ BIS FILES ############
+\bis\Ballast.csv
+\bis\Bank.csv
+\bis\Befästning.csv
+\bis\Cirkulärkurva.csv
+\bis\Detektor.csv
+\bis\Dränering.csv
+\bis\Frostskyddsisolering.csv
+\bis\Geotekniska händelser.csv
+\bis\Glacismur.csv
+\bis\Hållställe.csv
+\bis\HIS-givare.csv
+\bis\Järnvägsbro.csv
+\bis\Jordarmering.csv
+\bis\Jordspikning.csv
+\bis\Kalkcementpelare.csv
+\bis\Kanalisation.csv
+\bis\Ktl-Brygga.csv
+\bis\Ktl-Sektion.csv
+\bis\Ktl-Sektionsisolator.csv
+\bis\Ktl-Stolpe.csv
+\bis\Kvalitetsklass för spåret.csv
+\bis\Lastkaj.csv
+\bis\Lättfyllning.csv
+\bis\Lutning.csv
+\bis\Nedsatt stabilitet.csv
+\bis\Öppet dike.csv
+\bis\Övergångskurva.csv
+\bis\Påldäck.csv
+\bis\Plankorsning.csv
+\bis\Planskild korsning.csv
+\bis\Plats.csv
+\bis\Platsmitt.csv
+\bis\Plattform.csv
+\bis\Plattformsövergång.csv
+\bis\Raklinje.csv
+\bis\Räl.csv
+\bis\Rälsförhöjning.csv
+\bis\Rälssmörjningsapparat.csv
+\bis\Rälsvandringshinder.csv
+\bis\Rör.csv
+\bis\Rustbädd.csv
+\bis\Signal (ej ATC).csv
+\bis\Signal (främst ATC).csv
+\bis\Signalpunktstavla ERTMS.csv
+\bis\Skärning.csv
+\bis\Skarv.csv
+\bis\Sliper.csv
+\bis\Slopad plankorsning.csv
+\bis\Spänningsfri temperatur.csv
+\bis\Spår.csv
+\bis\Spårkors.csv
+\bis\Spårväxel.csv
+\bis\Spont.csv
+\bis\STH.csv
+\bis\Stödmur.csv
+\bis\Stoppbock.csv
+\bis\Trumma.csv
+\bis\Tryckbank.csv
+\bis\Tunnel.csv
+\bis\Underballast.csv
+\bis\Urgrävning.csv
+\bis\Vägbro.csv
+\bis\Vertikalkurva.csv
