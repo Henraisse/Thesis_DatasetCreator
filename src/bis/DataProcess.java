@@ -34,11 +34,15 @@ public class DataProcess{
 	String inputfolder = "";
 	String outputfolder = "";	
 	String besclass = "";
+	String speedclass = "";
 	
-	int besclassindex = -1;
+	public int speedclassindex = -1;
+	public int besclassindex = -1;
 	int maxmb = -1;
 
 	String dataset_name = "";
+	
+	public boolean displayDate = false;
 	
 	public int days = 100;
 	public double spread = 0.30;
@@ -61,77 +65,63 @@ public class DataProcess{
 	
 	
 	/**
-	 * Retrieves all the selected values from the first panel.
-	 * @param name 
+	 * The initial step of the dataset compilation process:
+	 * 1. Read all the input values from the GUI
+	 * 2. Set up a log file to print relevant data in
+	 * 3. Test critical systems to check for bugs
+	 * 4. Scan the 
+	 * @param i 
+	 * @param string 
+	 * 
 	 */
-	public void processStep0(String inputfolder, String outputfolder, String besclass, int besclassindex, String maxmb, String name, String interval, String spread, ParamFrame frame) {
+	public void preProcessStep(String inputfolder, String outputfolder, String besclass, int besclassindex, String maxmb, String name, String interval, String spread, ParamFrame frame, String speedclass, int speedclassindex) {
 		this.inputfolder = inputfolder;
 		this.outputfolder = outputfolder;
 		this.besclass = besclass;
 		this.besclassindex = besclassindex;
+		this.speedclass = speedclass;
+		this.speedclassindex = speedclassindex;
 		this.maxmb = Integer.parseInt((String) maxmb);
 		this.dataset_name = name;
 		this.days = Integer.parseInt(interval);
 		this.spread = Double.parseDouble(spread);
 		
 		
-		
-		
-
+		//Setup log
 		log = new Log(new File(outputfolder), "mainlog.txt", true);
-
-		log.reportln("");
-		log.reportln("######################################################################################################################################################");
-		log.reportln("######################################################################################################################################################");
-		log.reportln("#                   _____ _____  _            _____        _                 _          _____                      _ _           		     #");
-		log.reportln("#		   / ____|  __ \\| |          |  __ \\      | |               | |        / ____|                    (_) |          		     #");
-		log.reportln("#		  | (___ | |__) | |          | |  | | __ _| |_ __ _ ___  ___| |_      | |     ___  _ __ ___  _ __  _| | ___ _ __ 		     #");
-		log.reportln("#		   \\___ \\|  ___/| |          | |  | |/ _` | __/ _` / __|/ _ \\ __|     | |    / _ \\| '_ ` _ \\| '_ \\| | |/ _ \\ '__|		     #");
-		log.reportln("#		   ____) | |    | |____      | |__| | (_| | || (_| \\__ \\  __/ |_      | |___| (_) | | | | | | |_) | | |  __/ |   		     #");
-		log.reportln("#		  |_____/|_|    |______|     |_____/ \\__,_|\\__\\__,_|___/\\___|\\__|      \\_____\\___/|_| |_| |_| .__/|_|_|\\___|_|   		     #");
-		log.reportln("#		                                                                                            | |                  		     #");
-		log.reportln("#		                                                                                            |_|               			     #");   
-		log.reportln("######################################################################################################################################################");
-		log.reportln("######################################################################################################################################################");
-		log.reportln("");
-		log.reportln("Welcome to SPL Dataset Compiler! This program is aimed at compiling a usable machine learning dataset from rail data.");
-		log.reportln("This program is a work-in-progress, and is constructed for my thesis, so no guarantees or warranty at this point I'm afraid.");
-		log.reportln("");
-		log.reportln("");
+		
+		
+		//check program integrity
 		log.reportln("-------------- Program integrity check --------------");
 		fileCheck(inputfolder, log);
 		Test.testCriticalSystems(log, inputfolder);
 		log.reportln("-----------------------------------------------------");
-		log.reportln("");
-		log.reportln("");
-		log.reportln("######################################################################################################################################################");
-		scanPresentCorridors();
 
 		
-	
+		//scan present corridors
+		File corridorfile = new File(inputfolder + "\\corridors.txt");
+		FileLineIterator lines = new FileLineIterator(corridorfile, FileLineIterator.BYPASS_HEADER);
+		while(lines.pop()){		
+			String line = lines.getLine();
+			
+			corridors.add(line);
+			log.reportln("Adding Corridor: " + line);
+		}
 
 	}
 	
 
 
-
-
-
-
 	
 
 
 
-	
-	
-	
-	
-	
+
 	/**
 	 * Prepares the second panel and its checkboxes
 	 * @param bispanel
 	 */
-	public void processStep1(BISMainPanel bispanel) {		
+	public void selectParameters(BISMainPanel bispanel) {		
 		bisbase = new BISBase(inputfolder);
 		bispanel.prepareTask(bisbase, inputfolder);		
 		
@@ -141,38 +131,14 @@ public class DataProcess{
 	
 
 
-	/**
-	 * Read the correct values from the checkboxes
-	 */
-	public void processStep2() {
-		
-	}
-	
-	
-	
-	
-	
-	private void scanPresentCorridors() {
-		File corridorfile = new File(inputfolder + "\\corridors.txt");
-		FileLineIterator lines = new FileLineIterator(corridorfile, FileLineIterator.BYPASS_HEADER);
-		while(lines.pop()){		
-			//Pop and tokenize each line
-			String line = lines.getLine();
-			
-			corridors.add(line);
-			log.reportln("Adding Corridor: " + line);
-		}
-	}
 
 
-
-
-	public void processStep3(MESPanel mespanel) {
+	public void setupDataset(MESPanel mespanel) {
 		dataset = new Dataset(this, inputfolder, outputfolder, bisbase, mespanel, maxmb, dataset_name);
 	}
 	
 	
-	public void processStep4(JProgressBar progressBar, ParamFrame frame) {
+	public void compileDataset(JProgressBar progressBar, ParamFrame frame) {
 		dataset.build(progressBar, frame);
 	}	
 	

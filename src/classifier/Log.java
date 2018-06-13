@@ -38,7 +38,9 @@ public class Log {
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace();
 			ok = false;
-		} 		
+		} 	
+		
+		displayWelcomeMsg();
 	}
 	
 	public void report(String text) {
@@ -72,4 +74,26 @@ public class Log {
 		destination = dest;		
 	}
 	
+	
+	//*************
+	
+	public void displayWelcomeMsg() {
+		reportln("");
+		reportln("######################################################################################################################################################");
+		reportln("######################################################################################################################################################");
+		reportln("#                   _____ _____  _            _____        _                 _          _____                      _ _           		     #");
+		reportln("#		   / ____|  __ \\| |          |  __ \\      | |               | |        / ____|                    (_) |          		     #");
+		reportln("#		  | (___ | |__) | |          | |  | | __ _| |_ __ _ ___  ___| |_      | |     ___  _ __ ___  _ __  _| | ___ _ __ 		     #");
+		reportln("#		   \\___ \\|  ___/| |          | |  | |/ _` | __/ _` / __|/ _ \\ __|     | |    / _ \\| '_ ` _ \\| '_ \\| | |/ _ \\ '__|		     #");
+		reportln("#		   ____) | |    | |____      | |__| | (_| | || (_| \\__ \\  __/ |_      | |___| (_) | | | | | | |_) | | |  __/ |   		     #");
+		reportln("#		  |_____/|_|    |______|     |_____/ \\__,_|\\__\\__,_|___/\\___|\\__|      \\_____\\___/|_| |_| |_| .__/|_|_|\\___|_|   		     #");
+		reportln("#		                                                                                            | |                  		     #");
+		reportln("#		                                                                                            |_|               			     #");   
+		reportln("######################################################################################################################################################");
+		reportln("######################################################################################################################################################");
+		reportln("");
+		reportln("Welcome to SPL Dataset Compiler! This program is aimed at compiling a usable machine learning dataset from rail data.");
+		reportln("This program is a work-in-progress, and is constructed for my thesis, so no guarantees or warranty at this point I'm afraid.");
+		reportln("");
+	}
 }

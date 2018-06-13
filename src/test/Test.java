@@ -20,7 +20,8 @@ public class Test {
 		testSystem(log, testDates(), "Date day distance checking");
 		testSystem(log, test_valueClassifier_OK(), "Measurement line classification");
 		testSystem(log, testBISTypes(log, inputfolder), "BIS parameter interval checking");
-		testSystem(log, testClassifierIntervals(log), "Segment date interval checking");
+		log.reportln("Segment date interval checking turned OFF (re-activate in the code)");
+		//testSystem(log, testClassifierIntervals(log), "Segment date interval checking");
 	}
 	
 
@@ -177,12 +178,13 @@ public class Test {
 	
 	
 	public static String testSegment(Segment seg, Date date) {
-		try {
-			String ret = seg.getClassificationString(date, 99999, 1);
-			return ret;
-		} catch (InvalidDataPointException e) {
-			return e.getMessage();
-		}	
+		return "";
+//		try {
+//			String ret = seg.getClassificationString(date, 99999, 1);
+//			return ret;
+//		} catch (InvalidDataPointException e) {
+//			return e.getMessage();
+//		}	
 	}
 	
 	

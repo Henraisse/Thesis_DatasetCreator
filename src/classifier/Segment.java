@@ -74,12 +74,15 @@ public class Segment {
 	 * @return - classification string label for this segment and date
 	 * @throws InvalidDataPointException - in case this method cannot produce a valid classification label string
 	 */
-	public String getClassificationString(Date startdate, int maxdays, int mindays) throws InvalidDataPointException{
+	public String getClassificationString(Date startdate, int maxdays, int mindays, int speedLevel) throws InvalidDataPointException{
+		int optimaldays = (maxdays + mindays) / 2;
+		int currOptimaldays = 999999;
 		boolean isEmpty = true;
 		boolean isLastDate = true;
 		
 		//Create a stringbuilder to append class labels
 		StringBuilder sb = new StringBuilder();
+		String classLabel = "";
 		Date enddate = new Date(49, 12, 31);
 		
 		//Shrink the end date interval down to the nearest repair event
@@ -112,8 +115,12 @@ public class Segment {
 						isEmpty = false;
 						
 						//If it passed all checks this far, it is a class label part. Append it to the string builder
-						String cstring = se.getClassificationString();
-						sb.append(days + "-" + cstring + "#");
+						//String cstring = se.getClassificationString();
+						if(Math.abs(days-optimaldays) < currOptimaldays) {
+							currOptimaldays = Math.abs(days-optimaldays);
+							classLabel = se.getClassificationLabel(speedLevel);
+						}
+						sb.append(days + "-" + se.getClassificationString() + "#");
 					}															
 				}								
 			}
@@ -125,6 +132,8 @@ public class Segment {
 		if(isEmpty) {throw new InvalidDataPointException("(NO MEASUREMENTS AVAILABLE)", new Exception());}	
 		
 		//If no exceptions has been thrown yet, we can return the class label string given by the stringbuilder
+		sb.append("..CLABEL=" + classLabel + "..");
+		//return classLabel;
 		return sb.toString();
 	}
 	
@@ -353,6 +362,12 @@ public class Segment {
 		}
 		
 		
+		public String getClassificationLabel(int speedLevel) {
+			String ret = Byte.toString(eventTypeArray[speedLevel]);
+			return ret;
+		}
+
+
 		/**
 		 * Second constructor.
 		 * @param date

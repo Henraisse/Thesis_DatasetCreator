@@ -36,7 +36,7 @@ public class CenterPanel2 extends JPanel{
 	 * is scheduled to be made visible.
 	 */
 	public void initiateAction() {
-		process.processStep1(bispanel);
+		process.selectParameters(bispanel);
 	}
     
 	/**
@@ -49,7 +49,7 @@ public class CenterPanel2 extends JPanel{
 			bfp.updateHeaderSignatures();
 		}
 		
-		process.processStep3(bispanel.mespanel);
+		process.setupDataset(bispanel.mespanel);
 		return true;
 	}
 	

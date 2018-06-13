@@ -233,10 +233,10 @@ public class ClassifierProfile {
 	 * @return
 	 * @throws InvalidDataPointException
 	 */
-	public String getClassLabel(Date date, String track, int km, double m) throws InvalidDataPointException {
+	public String getClassLabel(Date date, String track, int km, double m, int speedlevel) throws InvalidDataPointException {
 		//Identify which segment it is, and ask it for its classification string
 		Segment segment = corridor.getSegment(track, km, m);
-		return segment.getClassificationString(date, 1000, 1);
+		return segment.getClassificationString(date, 1000, 1, speedlevel);
 	}
 	
 	

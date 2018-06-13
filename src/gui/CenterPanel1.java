@@ -28,8 +28,13 @@ public class CenterPanel1 extends JPanel{
 	public JTextField namefield = new JTextField("");
 	JButton chooseInput = new JButton("...");
 	JButton chooseOutput = new JButton("...");
-	String[] choices = { "B5","B4", "B3","B2","B1","All"};
-    JComboBox<String> besclass = new JComboBox<String>(choices);
+	
+	String[] inspection_choices = { "B5","B4", "B3","B2","B1","All"};
+	String[] speed_choices = { "H5","H4", "H3","H2","H1","H0"};
+	
+	JComboBox<String> besclass = new JComboBox<String>(inspection_choices);
+	JComboBox<String> speedclass = new JComboBox<String>(speed_choices);
+	
     public JTextField sizefield = new JTextField("");
     
     public JTextField inspectionDaysfield = new JTextField("");
@@ -42,7 +47,6 @@ public class CenterPanel1 extends JPanel{
 	public CenterPanel1(DataProcess process, ParamFrame parent) {
 		this.parent = parent;
 		this.process = process;
-		//setBackground(Color.cyan);
 		setupPanel1();
 	}
 	
@@ -86,7 +90,13 @@ public class CenterPanel1 extends JPanel{
     	besclass.setEnabled(false);
     	add(besclass);
     	
-    	
+    	JLabel sclabel = new JLabel("Speed class:");
+    	sclabel.setBounds(120, 140, 250, 25);
+    	sclabel.setForeground(Color.gray);
+    	sclabel.setFont(new Font("Calibri", Font.PLAIN, 12));
+    	add(sclabel);
+    	speedclass.setBounds(230, 140, 50, 25);
+    	add(speedclass);
     	
     	
     	JLabel sizelabel = new JLabel("Max file size (MB):");
@@ -224,7 +234,7 @@ public class CenterPanel1 extends JPanel{
 		
 		if(in && out && mb) {
 			inputfolder = inputfield.getText();
-			process.processStep0(inputfolder, outputfolder, (String)besclass.getSelectedItem(), besclass.getSelectedIndex(), sizefield.getText(), namefield.getText(), inspectionDaysfield.getText(), inspectionOffsetfield.getText(), parent);
+			process.preProcessStep(inputfolder, outputfolder, (String)besclass.getSelectedItem(), besclass.getSelectedIndex(), sizefield.getText(), namefield.getText(), inspectionDaysfield.getText(), inspectionOffsetfield.getText(), parent, (String)speedclass.getSelectedItem(), speedclass.getSelectedIndex());
 
 			return true;
 		}

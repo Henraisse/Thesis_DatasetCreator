@@ -14,6 +14,7 @@ import bis.DataWriter;
 import classification.InvalidDataPointException;
 import classifier.ClassifierProfile;
 import classifier.MeasurementFile;
+import classifier.Segment;
 import gui.MESPanel;
 import gui.ParamFrame;
 import util.FileLineIterator;
@@ -53,9 +54,13 @@ public class Dataset implements PropertyChangeListener{
 		this.inputfolder = inputfolder;
 
 		measurementBits = mespanel.getMESHeaderBits();
-				
-		String datafile_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString();			//Define the output file header, which will be the first line in each file
-		output_file_header = datafile_header;
+		
+		String dateheader = "";
+		if(dp.displayDate) {dateheader = "DATE;";}
+		
+		//Define the output file header, which will be the first line in each file;
+		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + "DATE;PRE_CLASS;POST_CLASS";
+	
 		
 		if(name.equals("")) {
 			name = Util.getTimeStamp();
@@ -63,22 +68,26 @@ public class Dataset implements PropertyChangeListener{
 		
 		String outputfilefolder =outputfolder + "\\" + name;
 		
-		writer = new DataWriter(outputfilefolder, maxmb, output_file_header + "Class_Label");
+		writer = new DataWriter(outputfilefolder, maxmb, output_file_header);
 		dp.setLogDestination(outputfilefolder);
 		//-------------------------------------------
 					
 		//doWork();	
-
 	}
 
 
-	
-	
-	
+
 
 	
 	
 	
+	
+
+
+
+
+
+
 	public void processCorridor(String corridor) {
 		Date[] repinterval = Util.getGlobalRepairDateInterval(new File(inputfolder + "\\repairs\\"));
 		dataprocess.log.reportln("-------------------------------------------------------------------------");
@@ -133,44 +142,7 @@ public class Dataset implements PropertyChangeListener{
 	
 	
 	
-	
-//	public void doWork2() {
-//    	System.out.println("measuring time...");
-//		long starttime = System.currentTimeMillis();
-//		
-//		
-//		//create output folder				
-//		//iterera igenom listan: för varje mätningsfil:
-//		File folder = new File(inputfolder + "\\measurements");
-//		
-//		int n  = folder.listFiles().length;
-//		int c = 0;
-//		int totalmb = 0;
-//		int readmb = 0;
-//		
-//		for (final File file : folder.listFiles()) {
-//			totalmb += (int) (file.length()/1000000);
-//		}
-//		
-//	    for (final File fileEntry : folder.listFiles()) {		//For each measurement file
-//	        if (fileEntry.isFile()) {	            	
-//	        	System.out.println("Processing file: " + fileEntry.getName());
-//	        	processFile(fileEntry, writer, classifier);	   		
-//	        	System.out.println("Done.\n");
-//	        	readmb += fileEntry.length()/1000000;
-//	        	c++;
-//	        	//setProgress(100*c/n);
-//	        	//frame.centerPanel3.setwrittenMB(writer.totalmbwritten, c, n, (double)(System.currentTimeMillis() - starttime)/1000.0, totalmb, readmb);
-//	        }
-//	       
-//	    }	    
-//	    
-//	    long stoptime = System.currentTimeMillis() - starttime;
-//	    System.out.println("Writing complete. (" + ((double)stoptime)/1000.0 + " s)");
-//	    
-//	    //writer.closeWriteFile();
-//	    //frame.finished();
-//	}
+
 	
 	
 	
@@ -266,15 +238,26 @@ public class Dataset implements PropertyChangeListener{
 		//Append the bis-data to the line
 		String bislines = bisprofile.getSegmentBISProfileString(corridor, track, km, m);	
 		sb.append(bislines);
+		
+		sb.append(date.toStringSPL());
 
 		//If there is a negative kilometer or a meter offset more than 1000 meters, discard this datapoint. We cannot guarantee that it belongs.
 		if(km < 0 || m > 1000.0 ) {
 			throw new InvalidDataPointException("(OUTSIDE VALID CORRIDOR)", new Exception());
 		}
 		
-		//Retrieve the class label and append it to the stringbuilder
-		String label = classifier.getClassLabel(date, track, km, m);
-		sb.append(label);		
+		
+		
+		
+		//Append the pre-class label
+		sb.append(Segment.classifyMeasurementLine(line)[dataprocess.speedclassindex] + ";");
+		
+		
+		
+		//Retrieve the post_class label and append it to the stringbuilder
+		String labels = classifier.getClassLabel(date, track, km, m, dataprocess.speedclassindex);
+		sb.append(labels);		
+		
 		
 		//Return the complete datapoint string
 		return sb.toString();
@@ -290,7 +273,22 @@ public class Dataset implements PropertyChangeListener{
 	//-----------------------------------------------------------------------------------------------------------------
 	
 	
-
+	public void propertyChange(PropertyChangeEvent evt) {
+        if ("progress" == evt.getPropertyName()) {
+            int progress = (Integer) evt.getNewValue();
+            progressBar.setValue(progress);
+        } 
+    }
+		
+	
+	public void build(JProgressBar progressBar, ParamFrame frame) {
+		this.frame = frame;
+		this.progressBar = progressBar;
+		
+	    progress_task = new Task();
+	    progress_task.addPropertyChangeListener(this);
+	    progress_task.execute();	    		
+	}
 
 
 	
@@ -347,26 +345,6 @@ public class Dataset implements PropertyChangeListener{
         
     }
 		
-	public void propertyChange(PropertyChangeEvent evt) {
-        if ("progress" == evt.getPropertyName()) {
-            int progress = (Integer) evt.getNewValue();
-            progressBar.setValue(progress);
-			
 
-//			double estimatedTime = (secs*100.0) / progress;
-//			System.out.println("Estimated Time left: " + secs);
-//			progressBar.setValue((int)progress);
-            
-        } 
-    }
-			
-	public void build(JProgressBar progressBar, ParamFrame frame) {
-		this.frame = frame;
-		this.progressBar = progressBar;
-		
-	    progress_task = new Task();
-	    progress_task.addPropertyChangeListener(this);
-	    progress_task.execute();	    		
-	}
 
 }

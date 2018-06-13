@@ -142,4 +142,9 @@ public class Date implements Comparable, Serializable {
 	public String toString() {
 		return "(" + year + " " + month + " " + day + ")";
 	}
+
+	public String toStringSPL() {
+		String ret = year + "." + month + "." + day + ";";
+		return ret;
+	}
 }

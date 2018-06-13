@@ -87,7 +87,7 @@ public class CenterPanel3 extends JPanel{
 	 */
 	public boolean advanceAction(ParamFrame frame) {
 				
-		process.processStep4(progressBar, frame);		
+		process.compileDataset(progressBar, frame);		
 		return true;
 	}
 
