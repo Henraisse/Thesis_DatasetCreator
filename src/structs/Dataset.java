@@ -18,11 +18,14 @@ import classifier.Segment;
 import gui.MESPanel;
 import gui.ParamFrame;
 import util.FileLineIterator;
-import util.SwitchBox;
 import util.Util;
+
+
 
 public class Dataset implements PropertyChangeListener{
 
+	private int notpreparedforUploadyet = 0;
+	
 	String outputfolder;
 	String inputfolder;
 	String output_file_header = "";
@@ -47,7 +50,6 @@ public class Dataset implements PropertyChangeListener{
 	 * @param name
 	 */
 	public Dataset(DataProcess dp, String inputfolder, String outputfolder, BISBase bisbase, MESPanel mespanel, int maxmb, String name)  {	
-		int i = 0;
 		this.dataprocess = dp;
 		this.bisbase = bisbase;
 		this.outputfolder = outputfolder;	
@@ -55,8 +57,6 @@ public class Dataset implements PropertyChangeListener{
 
 		measurementBits = mespanel.getMESHeaderBits();
 		
-		String dateheader = "";
-		if(dp.displayDate) {dateheader = "DATE;";}
 		
 		//Define the output file header, which will be the first line in each file;
 		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + "DATE;PRE_CLASS;POST_CLASS";
@@ -71,8 +71,6 @@ public class Dataset implements PropertyChangeListener{
 		writer = new DataWriter(outputfilefolder, maxmb, output_file_header);
 		dp.setLogDestination(outputfilefolder);
 		//-------------------------------------------
-					
-		//doWork();	
 	}
 
 

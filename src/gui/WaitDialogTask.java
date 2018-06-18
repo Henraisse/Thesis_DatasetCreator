@@ -2,12 +2,16 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 
+/**
+ * Displays a wait dialog.
+ * @author Henra
+ *
+ */
 class WaitDialogTask extends SwingWorker<Void, Void> {
  	
 	JDialog pleasewait;
@@ -23,7 +27,8 @@ class WaitDialogTask extends SwingWorker<Void, Void> {
 		task();		
 		pleasewait.dispose();
 	}
-					
+			
+	
 	protected void task() {
 		
 	}

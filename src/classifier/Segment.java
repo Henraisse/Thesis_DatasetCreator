@@ -133,8 +133,8 @@ public class Segment {
 		
 		//If no exceptions has been thrown yet, we can return the class label string given by the stringbuilder
 		sb.append("..CLABEL=" + classLabel + "..");
-		//return classLabel;
-		return sb.toString();
+		return classLabel;
+		//return sb.toString();
 	}
 	
 	

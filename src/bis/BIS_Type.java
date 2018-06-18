@@ -1,13 +1,12 @@
 package bis;
 import java.io.File;
 import java.util.ArrayList;
-
 import structs.Interval;
 import util.Util;
 
 /**
-	 * This class represents ONE bis type for one corridor.
-	 * @author Henra
+	 * This class represents ONE bis type for one corridor, for example sleepers or signal posts.
+	 * @author Henrik Rönnholm
 	 *
 	 */
 	public class BIS_Type{
@@ -17,7 +16,7 @@ import util.Util;
 		String type_name = "";
 		String corridor_name = "";
 		String[] headers;
-		//BISBase bisbase;
+		String error_field = "---";
 		
 		boolean test = false;
 		
@@ -26,29 +25,41 @@ import util.Util;
 		
 		//-----------------------------------------------------------
 		
+	
 		
+		/**
+		 * Constructor.
+		 * @param corridor
+		 * @param file
+		 * @param bisbase
+		 */
 		public BIS_Type(String corridor, File file, BISBase bisbase) {
-			int i = 0;
-			//this.bisbase = bisbase;
 			corridor_name = corridor;
 			storeElement(file);
 			setSelectedVariables(bisbase);
 		}
+	
 		
-				
+		
+		/**
+		 * Constructor for the test cases.		
+		 * @param corridor
+		 * @param file
+		 * @param var
+		 */
 		public BIS_Type(String corridor, File file, int[] var) {
-			int i = 0;
 			corridor_name = corridor;
 			storeElement(file);
 			selectedVariables = var;
 			test = true;
 		}
-		
 
 
 
-
-
+		/**
+		 * Stores a bis type element.
+		 * @param file
+		 */
 		public void storeElement(File file) {
 			type_name = file.getName().replaceAll(".csv", "");
 			headers = Util.get_headers(file);
@@ -57,33 +68,56 @@ import util.Util;
 		
 
 		
+		/**
+		 * Sets which variables have been selected. Done at setup, so the same values
+		 * doesn't have to be selected every time the program starts.
+		 * @param bisbase
+		 */
 		public void setSelectedVariables(BISBase bisbase) {
-			selectedVariables = bisbase.getSelectedBISParameters(type_name);				
-			//TODO: GÖR SÅ ATT INTERVALS TOKENIZERAS OCH INTERVALLET BYGGS UPP, OCH ATT DE FÅR EN COMPARE-FUNKTION			
+			selectedVariables = bisbase.getSelectedBISParameters(type_name);					
 		}
 
-
-		String error_field = "---";
 		
+		
+		/**
+		 * Checks if a bit array (actually an int array) contains any ones.
+		 * It is used to check if a BIS-type is completely unused, in which case it shouldn't be present
+		 * in the final dataset in any way.
+		 * @param bits
+		 * @return
+		 */
+		public boolean noBits(int[] bits) {
+			for(int i = 0; i < bits.length; i++) {
+				if(bits[i] == 1) {
+					return false;
+				}
+			}
+			return true;						
+		}
+		
+		
+		
+		/**
+		 * For this specific BIS type, return the segment data string (if present and selected fields)
+		 * For example, returns the data string for ballast, beginning with "YES" or "NO" depending if the segment is within a ballast interval, 
+		 * followed by each selected parameter (for example corridor, kilometer, type of ballast, and such)
+		 * @param track
+		 * @param km
+		 * @param m
+		 * @return
+		 */
 		public String getSegmentDataString(String track, int km, double m) {
-			//System.out.println("Finding an interval that fits [TRACK=" + track + " KM=" + km + " M=" + m + "]...");
 			Interval interval = null;
 			StringBuilder sb = new StringBuilder();
-			//find the correct interval, if there is any (otherwise just return a default string with zeroes)
-			//print/filter the interval's tokenized strings based on the bit-integer array provided by bisbase
 			
-			//System.out.println("Interval count: " + intervals.size());
 			for(Interval i: intervals) {
-				//System.out.println("-Checking interval [TRACK=" + i.track + " KM0=" + i.km0 + " M0=" + i.m1 + " KM1=" + i.km1 + " M1=" + i.m1 + "]...");
 				if(i.isWithin(m, km, track)) {
 					interval = i;
-					//System.out.println("-WITHIN INTERVAL: [TRACK=" + i.track + " KM0=" + i.km0 + " M0=" + i.m0 + " KM1=" + i.km1 + " M1=" + i.m1 + "]...");
 					break;
 				}
 			}
 			
 			int[] bits = selectedVariables;
-			//int[] bits = bisbase.getSelectedBISParameters(type_name);
 						
 			if(interval == null) {		
 				if(!noBits(bits)) {
@@ -109,20 +143,5 @@ import util.Util;
 			return sb.toString();
 		}
 		
-		
-		public boolean noBits(int[] bits) {
-			
-			for(int i = 0; i < bits.length; i++) {
-				if(bits[i] == 1) {
-					return false;
-				}
-			}
-			return true;						
-		}
-		
-		
+	
 	}
-	
-	
-	
-	

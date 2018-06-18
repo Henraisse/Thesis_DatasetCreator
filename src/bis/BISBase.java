@@ -1,34 +1,41 @@
 package bis;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+/**
+ * Keeps track of bis parameter selections.
+ * @author Henrik Ronnholm
+ *
+ */
 public class BISBase {
 
-	public ArrayList<BISHeader> headers = new ArrayList<BISHeader>();
+	public ArrayList<BISHeader> headers = new ArrayList<BISHeader>();	
+	public Hashtable<String, int[]> signatures = new Hashtable<String, int[]>(); 
 	
-	public Hashtable<String, int[]> signatures = new Hashtable<String, int[]>();
-	
-	
-	
+		
+	/**
+	 * Constructor.
+	 * @param inputfolder
+	 */
 	public BISBase(String inputfolder) {
-		readBISFiles(inputfolder);
+	    File directory = new File(inputfolder + "\\bis");
+	    for (File file : directory.listFiles()) {
+	    	if (file.isFile()) {	    		
+	    		BISHeader bh = new BISHeader(file);
+	    		headers.add(bh);
+	    	}
+	    }
 	}
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * Returns the selection bit array used to identify which parameters have been selected, given a bis type.
+	 * @param typename - the name of the bis type
+	 * @return
+	 */
 	public int[] getSelectedBISParameters(String typename) {
 		if(signatures.containsKey(typename)) {
 			return signatures.get(typename);
@@ -37,58 +44,18 @@ public class BISBase {
 	}
 	
 	
-	
-	public void readBISFiles(String in_path) {
-	    File directory = new File(in_path + "\\bis");
-	    for (File file : directory.listFiles()) {
-	    	if (file.isFile()) {	    		
-	    		BISHeader bh = new BISHeader(file);
-	    		headers.add(bh);
-	    	}
-	    }	
-	}
-	
-	
-	
-	
-	public String[] getFilteredBISHeaderStrings() {
-		ArrayList<String> bisheaders = new ArrayList<String>();
-		String[] ret = new String[0];
-		//For every bis type
-		for(BISHeader bh : headers) {
-			
-			String name = bh.name;
-			int[] signature = signatures.get(name);
-			String[] headers = bh.headers;
-			
-
-			for(int i = 0; i < signature.length; i++) {
-				if (signature[i] == 1) {
-					bisheaders.add(headers[i]);
-				}
-			}
-			
-			ret = new String[bisheaders.size()];
-			for(int i = 0; i < bisheaders.size(); i++) {
-				ret[i] = bisheaders.get(i);
-			}
-
-			
-		}
-		return ret;
-	}
-	
-	
-	
+	/**
+	 * Given the different selections of parameters, this returns the complete and sorted BIS type parameter header string, to be appended
+	 * at the top of every dataset output file.
+	 * @return
+	 */
 	public String getBISHeaderString() {
 		StringBuilder sb = new StringBuilder();
 		for(BISHeader bh : headers) {
 			String name = bh.name;
 			int[] signature = signatures.get(name);
 			String[] headers = bh.headers;
-			
-//			try {
-				
+
 				for(int i = 0; i < signature.length; i++) {
 					if (signature[i] == 1) {
 						sb.append(bh.name + ";");
@@ -100,39 +67,10 @@ public class BISBase {
 					if (signature[i] == 1) {
 						sb.append(headers[i] + ";");
 					}
-				}
-				
-//			}catch(NullPointerException e) {
-//				System.out.println("Signature not available for name " + name);
-//			}
-
-			
+				}		
 		}
 		return sb.toString();
 	}
 	
-	
-	
-	
-	public static String[] get_headers(File file) {
 
-		String[] ret = new String[10];
-		try {		
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			ret = br.readLine().split(";");	 //Throw this line away.				
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	
-
-	
-
-	
-	
-
-	
 }

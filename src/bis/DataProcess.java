@@ -1,22 +1,12 @@
 package bis;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-
 import classifier.Log;
 import gui.BISMainPanel;
 import gui.MESPanel;
@@ -24,8 +14,15 @@ import gui.ParamFrame;
 import structs.Dataset;
 import test.Test;
 import util.FileLineIterator;
-import util.Util;
 
+/**
+ * 
+ * The outward wrapper of the dataset compiler class. This is what the program GUI interacts with in order to
+ * perpetuate the compilation process.
+ * 
+ * @author Henrik Rönnholm
+ *
+ */
 public class DataProcess{
 
 	
@@ -75,6 +72,7 @@ public class DataProcess{
 	 * 
 	 */
 	public void preProcessStep(String inputfolder, String outputfolder, String besclass, int besclassindex, String maxmb, String name, String interval, String spread, ParamFrame frame, String speedclass, int speedclassindex) {
+		//Read fields an values from the GUI
 		this.inputfolder = inputfolder;
 		this.outputfolder = outputfolder;
 		this.besclass = besclass;
@@ -87,16 +85,14 @@ public class DataProcess{
 		this.spread = Double.parseDouble(spread);
 		
 		
-		//Setup log
+		//Setup the log (system.out.print along with a written text file in the output folder)
 		log = new Log(new File(outputfolder), "mainlog.txt", true);
-		
-		
+			
 		//check program integrity
 		log.reportln("-------------- Program integrity check --------------");
 		fileCheck(inputfolder, log);
 		Test.testCriticalSystems(log, inputfolder);
 		log.reportln("-----------------------------------------------------");
-
 		
 		//scan present corridors
 		File corridorfile = new File(inputfolder + "\\corridors.txt");
@@ -118,7 +114,7 @@ public class DataProcess{
 
 
 	/**
-	 * Prepares the second panel and its checkboxes
+	 * Prepares the second panel and its checkboxes along with the bisbase
 	 * @param bispanel
 	 */
 	public void selectParameters(BISMainPanel bispanel) {		
@@ -128,24 +124,43 @@ public class DataProcess{
 	}
 	
 	
-	
 
-
-
-
+	/**
+	 * Create the DataSet(the inner wrapper) and prepare for compilation 
+	 * @param mespanel
+	 */
 	public void setupDataset(MESPanel mespanel) {
 		dataset = new Dataset(this, inputfolder, outputfolder, bisbase, mespanel, maxmb, dataset_name);
 	}
 	
 	
+	
+	/**
+	 * Compiles the dataset.
+	 * @param progressBar
+	 * @param frame
+	 */
 	public void compileDataset(JProgressBar progressBar, ParamFrame frame) {
 		dataset.build(progressBar, frame);
 	}	
 	
 	
 	
+	/**
+	 * Sets the logfile output folder
+	 * @param outputfilefolder
+	 */
+	public void setLogDestination(String outputfilefolder) {
+		log.setDestination(outputfilefolder);
+	}
 	
 	
+	
+	/**
+	 * Performs a file check to make sure everything is present for the compilation.
+	 * @param inputFolder
+	 * @param log
+	 */
 	private void fileCheck(String inputFolder, Log log) {	
 		String errorMsg = "";
 		boolean allWell = true;
@@ -202,8 +217,7 @@ public class DataProcess{
 		
 		
 		if(!allWell) {
-			//"Not all required data files are available to the program. Cannot continue.", "Critical files missing"
-			//custom title, error icon
+			//if something is amiss, display an error message and terminate the program.
 			JOptionPane.showMessageDialog(null, errorMsg, "Critical files missing", JOptionPane.ERROR_MESSAGE);
 			log.reportln(errorMsg);
 			log.reportln("Encountered an error, terminating process.");
@@ -217,9 +231,7 @@ public class DataProcess{
 
 
 
-	public void setLogDestination(String outputfilefolder) {
-		log.setDestination(outputfilefolder);
-	}
+
 	
 
 }

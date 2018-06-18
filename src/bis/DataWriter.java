@@ -1,33 +1,30 @@
 package bis;
 
-import java.beans.PropertyChangeEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Random;
-
-import javax.swing.SwingWorker;
-
-import util.Util;
 
 public class DataWriter {
 
 	String outputfolder;
 	String output_file_header;
-	
-	int printfilecounter = 0;
-	public int totalmbwritten = 0;
+
+	public int totalmbwritten = 0;	
+	int printfilecounter = 0;	
 	int writtenmegabytes = 0;
 	int writtenbytes = 0;
-	
-	int maxMB = 1;
+	int maxMB = 100;
 	
 	BufferedWriter writer;
 	
 	
-	
+	/**
+	 * Constructor.
+	 * @param outputfolder
+	 * @param maxMB
+	 * @param output_file_header
+	 */
 	public DataWriter(String outputfolder, int maxMB, String output_file_header) {
 		this.maxMB = maxMB;
 		this.output_file_header = output_file_header;		
@@ -37,6 +34,9 @@ public class DataWriter {
 	
 	
 	
+	/**
+	 * Begin writing in a fresh, new file.
+	 */
 	public void startNewWriteFile() {
 		try {						
 			String name = createNewOutputFile(printfilecounter, outputfolder);
@@ -50,6 +50,10 @@ public class DataWriter {
 	}
 	
 	
+	
+	/**
+	 * Close the current writing file.
+	 */
 	public void closeWriteFile() {
 		try {
 			writer.flush();
@@ -62,6 +66,10 @@ public class DataWriter {
 	
 
 	
+	/**
+	 * Appends a new string to the file.
+	 * @param inputline
+	 */
 	public void appendLine(String inputline){
 		if(writer == null) {
 			startNewWriteFile();
@@ -76,29 +84,31 @@ public class DataWriter {
 			writtenmegabytes = 0;
 			writtenbytes = newBytes;	
 			resetFile();							
-		}
-		
-		
+		}		
 		try {		
 			writer.append(inputline);
 			
 		} catch (IOException e) {e.printStackTrace();}
 
 	}
+
 	
 	
-	
-
-
-
+	/**
+	 * Closes the old writing file and opens a new one.
+	 */
 	private void resetFile() {
 		closeWriteFile();
 		printfilecounter++;
 		startNewWriteFile();		
 	}
 
+	
 
-
+	/**
+	 * Counts the bytes passed to the DataWriter.
+	 * @param bytes
+	 */
 	private void count(int bytes) {
 		writtenbytes += bytes;
 		
@@ -110,32 +120,24 @@ public class DataWriter {
 	}
 
 
-
+	
+	/*
+	 * Creates a new file to write to.
+	 */
 	public String createNewOutputFile(int c, String folder) {
 		try {			
 			String path = folder + "\\dataset" + c + ".csv";
 			File f = new File(path);
-			//System.out.println(path);
 			f.getParentFile().mkdirs(); 
 			
 			f.createNewFile();
 			return f.getAbsolutePath();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	
-	
-	
-
-	
-	
-	
-	
-
 	
 
 	

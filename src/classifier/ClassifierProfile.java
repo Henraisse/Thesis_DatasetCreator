@@ -8,6 +8,11 @@ import structs.Date;
 import util.FileLineIterator;
 import util.Util;
 
+/**
+ * Class used to classify measurement file lines. That is, deciding if they are valid and labelling them according to a UH-limit.
+ * @author Henrik Ronnholm
+ *
+ */
 public class ClassifierProfile {
 
 	String corridor_name;
@@ -20,8 +25,16 @@ public class ClassifierProfile {
 	
 	Date reparation_start_date;
 	Date reparation_end_date;
-	//###########################¤¤¤## CONSTRUCTOR ####################################################
+
 	
+	/**
+	 * Constructor.
+	 * @param corridor_name
+	 * @param rep_start
+	 * @param rep_end
+	 * @param folder
+	 * @param log
+	 */
 	public ClassifierProfile(String corridor_name, Date rep_start, Date rep_end, File folder, Log log) {		
 		this.corridor_name = corridor_name;
 		corridor = new Corridor(this);
@@ -38,7 +51,8 @@ public class ClassifierProfile {
 		processInsertedFiles();		
 	}
 
-	//############################# PUBLIC METHODS ####################################################
+
+	
 	
 	/**
 	 * Given a folder containing measurement files, this filters out the correct and valid measurement files and remembers them for later use.
@@ -49,7 +63,6 @@ public class ClassifierProfile {
 	 */
 	public void insertMeasurementFiles(File measurementFolder) {
 		int c = 0;
-		//log.report("Inserting measurements files...");
 		for (final File measurementFile : measurementFolder.listFiles()) { 									// iterate through every measurement file available in folder
 			MeasurementFile file = new MeasurementFile(measurementFile);
 			
@@ -60,7 +73,6 @@ public class ClassifierProfile {
 			if(is_correct_format && is_correct_corridor && is_correct_date) {									//if all these are true, add the measurement file to the list
 				c++;
 				measurementFiles.add(file);
-				//log.report("File " + measurementFile.getName() + " added.");
 			}
 		}
 		log.report("Adding measurement files for corridor " + corridor_name + "... ");
@@ -76,11 +88,9 @@ public class ClassifierProfile {
 	 */
 	public void insertRepairFiles(File repairFolder) {
 		int c = 0;
-		//log.report("-------------");
-		//log.report("Inserting repair files...");
-		for (final File repfile : repairFolder.listFiles()) { 												// iterate through every measurement file available in folder	
+
+		for (final File repfile : repairFolder.listFiles()) {// iterate through every measurement file available in folder	
 			repairFiles.add(new RepairFile(repfile));			
-			//log.report("File " + repfile.getAbsolutePath() + " added.");
 			c++;
 		}
 		log.report("Adding repair files for corridor " + corridor_name + "... ");
@@ -89,35 +99,33 @@ public class ClassifierProfile {
 	}
 
 	
+	
+	/**
+	 * Processes the inserted files. Iterates through every measurement file, and each of its lines and create a measurement history from them.
+	 * When all measurement files have been processed, it processes the repair files to create repair history.
+	 * This allows the subsequent compilation step to have each measurement line segments history readily available at all times.
+	 */
 	public void processInsertedFiles() {		
-		
-		//########### START BY READING OFF EVERY MEASUREMENT SEGMENT AND INSERTING IT INTO THE DATA STRUCTURE ###########
 		int cme = 0;
 		int cre = 0;
-		//log.report("-------------");
-		//log.report("Reading segment measurement events from measurement files...");
+
 		log.report("Reading measurement events for corridor " + corridor_name + "... ");
 		for(MeasurementFile msrfile : measurementFiles) {			
 			FileLineIterator lines = new FileLineIterator(msrfile.getFile(), FileLineIterator.BYPASS_HEADER);		
 			String[] filename_fields = msrfile.getFile().getName().replaceAll(".csv", "").replaceAll(".CSV","").split("_");		//tokenize the file name to use its info
-			String corridor_name = filename_fields[2];
 			
 	    	int year = Integer.parseInt(filename_fields[1].substring(0, 2));
 	    	int month = Integer.parseInt(filename_fields[1].substring(2, 4));
 	    	int day = Integer.parseInt(filename_fields[1].substring(4, 6));
 			
 	    	Date date = new Date(year, month, day);
-	    	
-	    	int vc = 0;
-	    	int tot = 0;
-	    	
+	    		    	
 			while(lines.pop()){
-				tot++;
 				String line = lines.getLine();
 				String[] line_fields = line.split(";");
 				
 				String track = Util.getMeasurementLineTrack(line);
-				int km = Util.getMeasurementLineKm(line);													//Interpret the line characteristics
+				int km = Util.getMeasurementLineKm(line);
 				double m = Util.getMeasurementLineM(line);
 		
 				//retrieve the given segment
@@ -126,16 +134,12 @@ public class ClassifierProfile {
 				Segment segment = corridor.getSegment(track, km, m);
 				segment.storeMeasurementEvent(date, line_fields);	
 				cme++;
-				vc++;
 			}	
-			//log.report("Processed measurement file: ( Date=" + date + " Corridor=" + corridor_name + ") Valid datapoints=" + vc + "  Invalid datapoints=" + (tot-vc) + "  total datapoints=" + tot);
 		}
 		
 		
 		log.reportln("Added " + cme + " events.");
 		log.report("Adding repair events for corridor " + corridor_name + "... ");
-		//log.report("-------------");
-		//########### FOLLOW UP BY READING OFF EVERY REPAIR LINE AND INSERTING IT INTO THE DATA STRUCTURE ###########
 		for(RepairFile repfile : repairFiles) {
 			FileLineIterator lines = new FileLineIterator(repfile.getFile(), FileLineIterator.BYPASS_HEADER);
 			
@@ -163,8 +167,6 @@ public class ClassifierProfile {
 
 				int kmx = km0;
 				double mx = m0;
-				String intervalstring = km0 + "km " + m0 + "m " + " > " + km1 + "km " + m1 + "m ";
-				//log.report("Processing repair line: ( Date=" + date + " Corridor=" + corridor_name + " [" + intervalstring + "] )");
 				
 				while(!(kmx > km1 || (kmx == km1 && mx >= m1))) {
 					
@@ -184,20 +186,7 @@ public class ClassifierProfile {
 	
 	
 	
-	
-	
-	
-	
-	
 
-	
-	
-	
-	
-
-	
-	//############################# PUBLIC METHODS ########¤¤¤¤#######################################
-	
 	/**
 	 * check whether a line is valid. That means checking if any of the mandatory fields are corrupted. A valid line needs all its field uncorrupted.
 	 * @param line
