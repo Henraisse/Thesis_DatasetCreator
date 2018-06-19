@@ -239,7 +239,7 @@ public class CenterPanel1 extends JPanel{
 		boolean out = createOutputFolder();
 		boolean mb = Util.isInteger(sizefield.getText());
 		
-		
+
 		if(in && out && mb) {
 			inputfolder = inputfield.getText();
 			process.preProcessStep(inputfolder, outputfolder, (String)besclass.getSelectedItem(), besclass.getSelectedIndex(), sizefield.getText(), namefield.getText(), inspectionDaysfield.getText(), inspectionOffsetfield.getText(), parent, (String)speedclass.getSelectedItem(), speedclass.getSelectedIndex());

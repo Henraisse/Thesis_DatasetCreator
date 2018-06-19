@@ -41,6 +41,9 @@ public class Dataset implements PropertyChangeListener{
 	
 	int[] measurementBits = new int[0];
 	
+	int days;
+	int daysOffset;
+	
 	/**
 	 * Constructs a Dataset object and assigns a name to the dataset, if no previous name has been given.
 	 * @param dp
@@ -51,17 +54,20 @@ public class Dataset implements PropertyChangeListener{
 	 * @param maxmb
 	 * @param name
 	 */
-	public Dataset(DataProcess dp, String inputfolder, String outputfolder, BISBase bisbase, MESPanel mespanel, int maxmb, String name)  {	
+	public Dataset(DataProcess dp, String inputfolder, String outputfolder, BISBase bisbase, MESPanel mespanel, int maxmb, String name, int days, int daysOffset)  {	
 		this.dataprocess = dp;
 		this.bisbase = bisbase;
 		this.outputfolder = outputfolder;	
 		this.inputfolder = inputfolder;
 
+		this.days = days;
+		this.daysOffset = daysOffset;
+		
 		measurementBits = mespanel.getMESHeaderBits();
 		
 		
 		//Define the output file header, which will be the first line in each file;
-		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + "DATE;PRE_CLASS;POST_CLASS";
+		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + "DATE;PRE_CLASS;POST_CLASS;OFFSET_DAYS";
 	
 		
 		if(name.equals("")) {
@@ -98,7 +104,7 @@ public class Dataset implements PropertyChangeListener{
 		dataprocess.log.reportln("-------------------------------------------------------------------------");
 	
 		BISProfile bisprofile = new BISProfile(inputfolder, corridor, bisbase);	   	//create a bisprofile for this corridor			
-		ClassifierProfile cp = new ClassifierProfile(corridor, repinterval[0], repinterval[1], new File(inputfolder), dataprocess.log);
+		ClassifierProfile cp = new ClassifierProfile(corridor, repinterval[0], repinterval[1], new File(inputfolder), dataprocess.log, days, daysOffset);
 
 		int success = 0;
 		int empty = 0;

@@ -24,6 +24,7 @@ class WaitDialogTask extends SwingWorker<Void, Void> {
 			
 	@Override
 	protected void done() {
+		task();	
 		pleasewait.dispose();
 	}
 			

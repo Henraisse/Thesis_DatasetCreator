@@ -129,6 +129,7 @@ public class ParamFrame extends JFrame{
 		    @Override
 		    public void actionPerformed(ActionEvent e) {		    	
 		    	if(panelcounter == 0) {		   		    		
+		    		System.out.println("Wait dialog");
 		    		WaitDialogTask sw = new WaitDialogTask() {
 		    			@Override
 		    			protected void task() {

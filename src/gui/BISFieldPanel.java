@@ -97,7 +97,7 @@ public class BISFieldPanel extends JPanel{
 	         }        
 	         in.close();
 	         fileIn.close();
-	      } catch (IOException i) {i.printStackTrace();return;} catch (ClassNotFoundException c) {c.printStackTrace();return;}
+	      } catch (IOException i) {/*i.printStackTrace();*/return;} catch (ClassNotFoundException c) {/*c.printStackTrace();*/return;}
 		
 	}
 	

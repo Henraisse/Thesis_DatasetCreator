@@ -130,7 +130,7 @@ public class DataProcess{
 	 * @param mespanel
 	 */
 	public void setupDataset(MESPanel mespanel) {
-		dataset = new Dataset(this, inputfolder, outputfolder, bisbase, mespanel, maxmb, dataset_name);
+		dataset = new Dataset(this, inputfolder, outputfolder, bisbase, mespanel, maxmb, dataset_name, days, (int)(days*spread));
 	}
 	
 	

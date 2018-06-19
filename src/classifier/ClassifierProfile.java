@@ -27,6 +27,8 @@ public class ClassifierProfile {
 	Date reparation_start_date;
 	Date reparation_end_date;
 
+	int minMeasDays = 60;
+	int maxMeasDays = 8;
 	
 	/**
 	 * Constructor.
@@ -36,7 +38,7 @@ public class ClassifierProfile {
 	 * @param folder
 	 * @param log
 	 */
-	public ClassifierProfile(String corridor_name, Date rep_start, Date rep_end, File folder, Log log) {		
+	public ClassifierProfile(String corridor_name, Date rep_start, Date rep_end, File folder, Log log, int mDays, int mDaysOffset) {		
 		this.corridor_name = corridor_name;
 		corridor = new Corridor(this);
 		reparation_start_date = rep_start;
@@ -44,6 +46,11 @@ public class ClassifierProfile {
 		
 		this.log = log;
 				
+		
+		minMeasDays = mDays - mDaysOffset;
+		maxMeasDays = mDays + mDaysOffset;
+
+		
 		File measurementFolder = new File(folder + "\\measurements\\");
 		File repairFolder = new File(folder + "\\repairs\\");
 		
@@ -227,7 +234,7 @@ public class ClassifierProfile {
 	public String getClassLabel(Date date, String track, int km, double m, int speedlevel) throws InvalidDataPointException {
 		//Identify which segment it is, and ask it for its classification string
 		Segment segment = corridor.getSegment(track, km, m);
-		return segment.getClassificationString(date, 1000, 1, speedlevel);
+		return segment.getClassificationString(date, maxMeasDays, minMeasDays, speedlevel);
 	}
 	
 	
