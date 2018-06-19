@@ -5,6 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * Class for wrapping the line iteration. Pops each line in turn.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class FileLineIterator {
 
 	public static final int INCLUDE_HEADER = 0;
@@ -18,8 +24,14 @@ public class FileLineIterator {
 	private String header = "";
 	String currentString = "";
 	
+	
+	
+	/**
+	 * Constructor.
+	 * @param file
+	 * @param headerChoice
+	 */
 	public FileLineIterator(File file, int headerChoice) {
-		int i = 0;
 		setting = headerChoice;
 		try {									
 			br = new BufferedReader(new FileReader(file));	
@@ -34,6 +46,11 @@ public class FileLineIterator {
 	}
 	
 	
+	
+	/**
+	 * Pops a line from the file iterator. returns a boolean denoting if the popping succeeded or not.
+	 * @return
+	 */
 	public boolean pop() {
 		try {
 			currentString = br.readLine();
@@ -47,16 +64,31 @@ public class FileLineIterator {
 	}
 	
 	
+	
+	/**
+	 * Returns the last popped line.
+	 * @return
+	 */
 	public String getLine() {
 		return currentString;
 	}
 	
+	
+	
+	/**
+	 * Returns the header line of the current file.
+	 * @return
+	 */
 	public String getHeaderLine() {
 		if(header == null)return "";
 		return header;
 	}
 	
 	
+	
+	/**
+	 * Close the FileLineIterator object.
+	 */
 	public void close() {
 		try {
 			br.close();

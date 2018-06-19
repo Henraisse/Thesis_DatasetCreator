@@ -21,11 +21,13 @@ import util.FileLineIterator;
 import util.Util;
 
 
-
+/**
+ * The inner wrapper Class for creating the dataset.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class Dataset implements PropertyChangeListener{
-
-	private int notpreparedforUploadyet = 0;
-	
 	String outputfolder;
 	String inputfolder;
 	String output_file_header = "";
@@ -85,7 +87,10 @@ public class Dataset implements PropertyChangeListener{
 
 
 
-
+	/**
+	 * Processes all the corridor's measurement files and turns them into datapoints.
+	 * @param corridor
+	 */
 	public void processCorridor(String corridor) {
 		Date[] repinterval = Util.getGlobalRepairDateInterval(new File(inputfolder + "\\repairs\\"));
 		dataprocess.log.reportln("-------------------------------------------------------------------------");
@@ -279,6 +284,12 @@ public class Dataset implements PropertyChangeListener{
     }
 		
 	
+	
+	/**
+	 * Initiates the compilation process which creates the dataset.
+	 * @param progressBar
+	 * @param frame
+	 */
 	public void build(JProgressBar progressBar, ParamFrame frame) {
 		this.frame = frame;
 		this.progressBar = progressBar;
@@ -292,7 +303,7 @@ public class Dataset implements PropertyChangeListener{
 	
 	/**
 	 * This object is created and run when the compilation task of the dataset is set in motion.
-	 * @author Henra
+	 * @author Henrik Ronnholm
 	 *
 	 */
 	class Task extends SwingWorker<Void, Void> {

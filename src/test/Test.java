@@ -1,32 +1,37 @@
 package test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-
-import bis.BISProfile;
 import bis.BIS_Type;
-import classification.InvalidDataPointException;
 import classifier.Log;
 import classifier.Segment;
-import classifier.Segment.MsEv;
 import structs.Date;
-import util.Util;
 
+/**
+ * Test class for the SPL dataset compiler program. Checks if critical subsystems are free from some obvious bugs. 
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class Test {
 	
 	public static void testCriticalSystems(Log log, String inputfolder) {
-		int i = 0;
+
 		testSystem(log, testDates(), "Date day distance checking");
 		testSystem(log, test_valueClassifier_OK(), "Measurement line classification");
 		testSystem(log, testBISTypes(log, inputfolder), "BIS parameter interval checking");
 		log.reportln("Segment date interval checking turned OFF (re-activate in the code)");
-		//testSystem(log, testClassifierIntervals(log), "Segment date interval checking");
+		//testSystem(log, testClassifierIntervals(log), "Segment date interval checking"); ------ This is deactivated for now. Format refactoring needed.
 	}
 	
 
 
-
+	/**
+	 * Test a specific subsystem.
+	 * @param log
+	 * @param bool
+	 * @param name
+	 */
 	public static void testSystem(Log log, boolean bool, String name) {
 		if(!bool) {
 			log.reportln("Program integrity compromised, a bug has been detected. Terminating process...");
@@ -88,7 +93,14 @@ public class Test {
 	
 	
 
-	
+	/**
+	 * Tests the Value classifier.
+	 * @param value
+	 * @param parameter
+	 * @param input
+	 * @param expectedRes
+	 * @return
+	 */
 	public static boolean testVC(double value, double[][] parameter, byte[] input, byte[] expectedRes) {
 		byte[] res = Segment.getParameterActionLevel(value, parameter, input);
 		if(Arrays.equals(res, expectedRes)) {return true;}
@@ -97,6 +109,12 @@ public class Test {
 	
 	
 	
+	/**
+	 * Tests the bis types.
+	 * @param log
+	 * @param input
+	 * @return
+	 */
 	public static boolean testBISTypes(Log log, String input) {		
 		File testfile = new File(input + "\\testbisfile.csv");
 		BIS_Type testtype = new BIS_Type("1337", testfile, new int[] {0, 0, 0, 0, 0, 0, 1, 0, 0, 0});
@@ -140,6 +158,10 @@ public class Test {
 
 	
 	
+	/**
+	 * Tests the date class.
+	 * @return
+	 */
 	private static boolean testDates() {
 		Date start = new Date(15, 10, 10);
 		Date stop = new Date(16, 2, 14);
@@ -153,11 +175,12 @@ public class Test {
 	}
 	
 	
-	
-	
-	
-	
-	
+
+	/**
+	 * Tests the segment and classifier intervals.
+	 * @param log
+	 * @return
+	 */
 	public static boolean testClassifierIntervals(Log log) {
 		Segment seg = new Segment(100.0);
 		
@@ -177,6 +200,12 @@ public class Test {
 	}
 	
 	
+	/**
+	 * Tests the classification segment strings. Needs a change in format in order to work. I'm busy :o
+	 * @param seg
+	 * @param date
+	 * @return
+	 */
 	public static String testSegment(Segment seg, Date date) {
 		return "";
 //		try {

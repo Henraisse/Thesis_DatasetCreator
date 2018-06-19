@@ -2,7 +2,9 @@ package structs;
 
 import java.io.Serializable;
 
-public class Date implements Comparable, Serializable {
+public class Date implements Comparable<Object>, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public static final int MAX_YEAR = 50;
 	

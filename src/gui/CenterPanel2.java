@@ -8,12 +8,16 @@ import javax.swing.JPanel;
 import bis.DataProcess;
 
 public class CenterPanel2 extends JPanel{
-	
+	private static final long serialVersionUID = 1L;
+
 	DataProcess process;
-	
-	
+		
 	public BISMainPanel bispanel = new BISMainPanel();
 	
+	/**
+	 * Constructor.
+	 * @param process
+	 */
 	public CenterPanel2(DataProcess process) {
 		this.process = process;
 		setBackground(Color.green);
@@ -21,14 +25,7 @@ public class CenterPanel2 extends JPanel{
     	add(bispanel);
     	bispanel.setVisible(true);
 	}
-	
-	
 
-	
-    
-
-
-	
 	
 
 	/**
@@ -39,6 +36,8 @@ public class CenterPanel2 extends JPanel{
 		process.selectParameters(bispanel);
 	}
     
+	
+	
 	/**
 	 * Run when this panel is done with its work, and the next is scheduled to be made visible.
 	 * @return
@@ -52,8 +51,5 @@ public class CenterPanel2 extends JPanel{
 		process.setupDataset(bispanel.mespanel);
 		return true;
 	}
-	
-	
-	
 	
 }

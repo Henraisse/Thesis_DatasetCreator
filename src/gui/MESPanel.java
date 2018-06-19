@@ -1,6 +1,5 @@
 package gui;
 
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -12,19 +11,25 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-
 import structs.SelectionSetting;
 import util.Util;
 
+
+/**
+ * The panel that displays the selection of measurement parameters.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class MESPanel extends JPanel{
 
+	private static final long serialVersionUID = 1L;
 	String inputfolder;
 	String[] headers = new String[1];
 	JLabel label = new JLabel();		
@@ -34,7 +39,9 @@ public class MESPanel extends JPanel{
 
 
 
-
+	/**
+	 * Constructor.
+	 */
 	public MESPanel() {
 		this.setPreferredSize(new Dimension(200, 350));
 		setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -57,6 +64,9 @@ public class MESPanel extends JPanel{
 
 
 
+	/**
+	 * Save the settings and store them for later use.
+	 */
 	public void storeSettings() {
 		SelectionSetting settings = new SelectionSetting(headerSelection);		
 	      try {
@@ -72,6 +82,10 @@ public class MESPanel extends JPanel{
 	}
 	
 	
+	
+	/**
+	 * Attempt to read the saved settings.
+	 */
 	public void attemptReadSettings() {
 		try {
 	         FileInputStream fileIn = new FileInputStream(inputfolder + "\\settings\\measurement_main");
@@ -97,15 +111,12 @@ public class MESPanel extends JPanel{
 	}
 
 
-
-
-
-
-
-
+	
+	/**
+	 * Run every time parameter selection is changed. Changes the selection and updates the stored settings.
+	 */
 	public void updateHeaderSelection() {
 		headerSelection = new int[fields.size()];
-
 		for(int i = 0; i < fields.size(); i++) {
 			headerSelection[i] = fields.get(i).getBit();
 		}
@@ -116,14 +127,22 @@ public class MESPanel extends JPanel{
 	
 	
 	
-	
+	/**
+	 * Returns the measurement parameter string array.
+	 * @return
+	 */
 	public String[] getMESHeaderStrings() {
 		return headers;
 	}
 	
+	
+	
+	/**
+	 * Returns the measurement parameter string.
+	 * @return
+	 */
 	public String getMESHeaderString() {		
-		StringBuilder sb = new StringBuilder();
-		
+		StringBuilder sb = new StringBuilder();		
 		updateHeaderSelection();
 		
 		for(int i = 0; i < headers.length; i++) {
@@ -131,38 +150,25 @@ public class MESPanel extends JPanel{
 				sb.append(headers[i] + ";");
 			}
 		}
-
 		return sb.toString();
 	}
 	
+	
+	
+	/**
+	 * Returns the measurement parameter bit array (int array).
+	 * @return
+	 */
 	public int[] getMESHeaderBits() {		
 		return headerSelection;
 	}
 
-
-
-	public class CheckBoxKit extends JPanel{
-		BISFieldPanel parent;
-		JCheckBox cb = new JCheckBox();
-
-		public CheckBoxKit(String field) {		
-			setOpaque(false);
-			cb.setText(field);			
-			cb.setOpaque(false);
-			add(cb);
-			cb.setVisible(true);
-		}
-
-		public int getBit() {
-			if(cb.isSelected()) {
-				return 1;
-			}
-			return 0;
-		}
-
-	}
-
-
+	
+	
+	/**
+	 * Sets the input folder.
+	 * @param inputfolder
+	 */
 	public void setInputFolder(String inputfolder) {
 		this.inputfolder = inputfolder;
 			
@@ -172,16 +178,17 @@ public class MESPanel extends JPanel{
 			if(headers.length == 48) {
 				break;
 			}
-		}
-
-		
+		}		
 		setupHeaderSelection(inputfolder);		
 		attemptReadSettings();
 	}
 
 
 
-	
+	/**
+	 * Setup the parameter selection boxes.
+	 * @param inputfolder
+	 */
 	public void setupHeaderSelection(String inputfolder) {
 		for(int i = 0; i < headers.length; i++) {			
 			CheckBoxKit cbk = new CheckBoxKit(headers[i]);
@@ -192,13 +199,46 @@ public class MESPanel extends JPanel{
 			cbk.setVisible(true);					
 		}		
 	}
-	
-	
 
 	
 	
 	
-	
-	
+	/**
+	 * Represents a complete parameter box in the parameter selection list.
+	 * 
+	 * @author Henrik Ronnholm
+	 *
+	 */
+	public class CheckBoxKit extends JPanel{
+		private static final long serialVersionUID = 1L;
+		
+		BISFieldPanel parent;
+		JCheckBox cb = new JCheckBox();
 
+		/**
+		 * Constructor.
+		 * @param field
+		 */
+		public CheckBoxKit(String field) {		
+			setOpaque(false);
+			cb.setText(field);			
+			cb.setOpaque(false);
+			add(cb);
+			cb.setVisible(true);
+		}
+
+		
+		
+		/**
+		 * Returns the bit for if the checkbox is selected or not.
+		 * @return
+		 */
+		public int getBit() {
+			if(cb.isSelected()) {
+				return 1;
+			}
+			return 0;
+		}
+
+	}
 }

@@ -1,27 +1,18 @@
 package util;
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import classifier.MeasurementFile;
 import gui.ParamFrame;
 import structs.Date;
 import structs.Interval;
@@ -33,7 +24,12 @@ public class Util {
 
 
 
-
+	/**
+	 * Return intervals from a file. Reads line by line and turns it into a given interval. Requires each file line to be of correct format (obviously).
+	 * @param file
+	 * @param corridor
+	 * @return
+	 */
 	public static ArrayList<Interval> get_intervals(File file, String corridor){
 		ArrayList<Interval> intervals = new ArrayList<Interval>();		
 		try {		
@@ -45,8 +41,6 @@ public class Util {
 
 				String[] fields = line.split(";");  
 				String bandel_name = fields[0];
-
-				//System.out.println("comparing '" + corridor + "'=?'" + bandel_name + "'");
 
 				if(bandel_name.equals(corridor)) {
 					Interval interval = null;
@@ -63,15 +57,16 @@ public class Util {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//System.out.println("Done");
 		return intervals;
 	}
 
 
 
-
-
-
+	/**
+	 * Checks if string corresponds to an integer.
+	 * @param s
+	 * @return
+	 */
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
@@ -88,14 +83,18 @@ public class Util {
 
 
 
-
+	/**
+	 * Returns the header strings of a given csv file.
+	 * @param file
+	 * @return
+	 */
 	public static String[] get_headers(File file) {
 
 		String[] ret = new String[1];
 		try {		
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			ret = br.readLine().split(";");	 //Throw this line away.				
-
+			ret = br.readLine().split(";");	 			
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,32 +103,26 @@ public class Util {
 
 
 
+	/**
+	 * Sets the look and feel of the ParamFrame.
+	 * @param pf
+	 */
 	public static void setLookAndFeel(ParamFrame pf) {
 		try {
-
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-
 			SwingUtilities.updateComponentTreeUI(pf);
 		} 
-		catch (UnsupportedLookAndFeelException e) {
-			// handle exception
-		}
-		catch (ClassNotFoundException e) {
-			// handle exception
-		}
-		catch (InstantiationException e) {
-			// handle exception
-		}
-		catch (IllegalAccessException e) {
-			// handle exception
-		}
+		catch (UnsupportedLookAndFeelException e) {}
+		catch (ClassNotFoundException e) {}
+		catch (InstantiationException e) {}
+		catch (IllegalAccessException e) {}
 	}
 
 
 
-
-
-
+	/**
+	 * Returns a timestamp string of the current date and time.
+	 */
 	public static String getTimeStamp() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
 		return sdf.format(new Timestamp(System.currentTimeMillis()));
@@ -137,13 +130,16 @@ public class Util {
 
 
 
-
-
-
-
-
-
-
+	/**
+	 * Checks whether a given date is after another date.
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param curr_year
+	 * @param curr_month
+	 * @param curr_day
+	 * @return
+	 */
 	public static boolean isAfterDate(int year, int month, int day, int curr_year, int curr_month, int curr_day) {
 		if(year > curr_year) {
 			return true;
@@ -160,15 +156,12 @@ public class Util {
 	}
 
 
-
-
-
-
-
-
-
-
-
+	
+	
+	/**
+	 * Deletes a folder and its contents.
+	 * @param folder
+	 */
 	public static void deleteFolderAndContents(File folder) {
 		File[] files = folder.listFiles();
 		if(files!=null) { //some JVMs return null for empty dirs
@@ -183,47 +176,9 @@ public class Util {
 		folder.delete();
 	}
 
-	public static void createFolder(String path) {
-		new File(path).mkdirs();
-	}
-
-	public static void makeFileInDirs(File file) throws IOException {
-		if(!file.exists()) {
-			new File(file.getParentFile().getPath()).mkdirs();
-			file.createNewFile();
-		}
-	}
 	
-	public static void writeSingleLine(File file, String line) throws IOException {
-		FileWriter writer = new FileWriter(file, true);
-		writer.write(line + "\n");
-		writer.close();
-	}
-
-
-	public static int getMeasurementLineKm(String line) {
-		int ret = Integer.parseInt(line.split(";")[4]);
-		return ret;
-	}
-
-	public static double getMeasurementLineM(String line) {			
-		double ret = Double.parseDouble(line.split(";")[5]);
-		return ret;
-	}
-
-	public static String getMeasurementLineTrack(String line) {	
-		String ret = line.split(";")[6];
-		return ret;
-	}
-
-	//########################################################################################################################################################################################
-	//######################################################################## LABEL CLASSIFICATION ##########################################################################################
-	//########################################################################################################################################################################################
-
-
-
-
-
+	
+	
 	/**
 	 * Returns the biggest of the two bytes, favouring the first one in a tie.
 	 * @param b0
@@ -234,44 +189,100 @@ public class Util {
 		if(b0 >= b1) {return b0;}
 		return b1;
 	}
+	
+	
+	
+	/**
+	 * Creates a folder.
+	 * @param path
+	 */
+	public static void createFolder(String path) {
+		new File(path).mkdirs();
+	}
+
+	
+	
+	/**
+	 * Creates a file, if containing folder doesn't exist, create it.
+	 * @param file
+	 * @throws IOException
+	 */
+	public static void makeFileInDirs(File file) throws IOException {
+		if(!file.exists()) {
+			new File(file.getParentFile().getPath()).mkdirs();
+			file.createNewFile();
+		}
+	}
+	
+	
+	
+	/**
+	 * Writes a single line to a file.
+	 * @param file
+	 * @param line
+	 * @throws IOException
+	 */
+	public static void writeSingleLine(File file, String line) throws IOException {
+		FileWriter writer = new FileWriter(file, true);
+		writer.write(line + "\n");
+		writer.close();
+	}
 
 
+	
+	/**
+	 * Returns the kilometer field of a given measurement line.
+	 * @param line
+	 * @return
+	 */
+	public static int getMeasurementLineKm(String line) {
+		int ret = Integer.parseInt(line.split(";")[4]);
+		return ret;
+	}
 
+	
+	
+	/**
+	 * Returns the meter field of a given measurement line.
+	 * @param line
+	 * @return
+	 */
+	public static double getMeasurementLineM(String line) {			
+		double ret = Double.parseDouble(line.split(";")[5]);
+		return ret;
+	}
 
-
-
-	private static String printArray(byte[] output) {
-		String ret = "{ " + output[0] + " " + output[1] + " " + output[2] + " " + output[3] + " " + output[4] + " " + output[5] + " }";
+	
+	
+	/**
+	 * Returns the track field of a given measurement line.
+	 * @param line
+	 * @return
+	 */
+	public static String getMeasurementLineTrack(String line) {	
+		String ret = line.split(";")[6];
 		return ret;
 	}
 
 
 
-
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
+	/**
+	 * Returns the month in which repairs was made in a repair file.
+	 * @param string
+	 * @return
+	 */
 	public static int getRepairMonth(String string) {
 		String month = string.split("-")[1];
 		return Integer.parseInt(month);
 	}
 	
+	
+	
+	/**
+	 * Returns the year in which repairs was made in a repair file.
+	 * @param string
+	 * @return
+	 */
 	public static int getRepairYear(String string) {
 		String year = string.split("-")[0];
 		year = year.substring(2, 4);
@@ -283,40 +294,12 @@ public class Util {
 	}
 	
 	
-//	public static int getRepairMonthOLD(String string) {
-//		String month = string.split("-")[0];
-//
-//		if(month.equals("Jan")) {return 1;}
-//		if(month.equals("Feb")) {return 2;}
-//		if(month.equals("Mar")) {return 3;}
-//		if(month.equals("Apr")) {return 4;}
-//		if(month.equals("May")) {return 5;}
-//		if(month.equals("Jun")) {return 6;}
-//		if(month.equals("Jul")) {return 7;}
-//		if(month.equals("Aug")) {return 8;}
-//		if(month.equals("Sep")) {return 9;}
-//		if(month.equals("Oct")) {return 10;}
-//		if(month.equals("Nov")) {return 11;}
-//		if(month.equals("Dec")) {return 12;}
-//
-//		return -1;
-//	}
 
-//	public static int getRepairYearOLD(String string) {
-//		String year = string.split("-")[1];
-//		if(year.length() > 2) {
-//			System.err.println("Getting repair year with more than two digits! Fail!");
-//			System.exit(0);
-//		}
-//		return Integer.parseInt(year);
-//
-//	}
-
-
-
-
-
-
+	/**
+	 * Rounds a given meter double to the closest 25cm segment.
+	 * @param meters
+	 * @return
+	 */
 	public static double roundOffSegment(double meters) {
 		int wholeMeters = (int)meters;
 		double cm = meters%1;
@@ -339,6 +322,11 @@ public class Util {
 
 
 
+	/**
+	 * Returns the global repair interval in which the repair file provides coverage (absence of evidence is not evidence of absence)
+	 * @param repairFolder
+	 * @return
+	 */
 	public static Date[] getGlobalRepairDateInterval(File repairFolder) {
 		ArrayList<Date> earliestDates = new ArrayList<Date>();
 		ArrayList<Date> latestDates = new ArrayList<Date>();
@@ -359,7 +347,11 @@ public class Util {
 
 
 
-
+	/**
+	 * Returns the local repair date interval.
+	 * @param repairFile
+	 * @return
+	 */
 	public static Date[] getLocalRepairDateInterval(File repairFile) {
 		Date[] ret = new Date[2];
 		ret[0] = new Date(50, 1, 1);
@@ -389,30 +381,20 @@ public class Util {
 
 
 
-
+	/**
+	 * Moves a file to a given destination.
+	 * @param fileToMove
+	 * @param destination
+	 */
 	public static void moveFile(File fileToMove, String destination) {
-
 		boolean isMoved = fileToMove.renameTo(new File(destination + "\\" + fileToMove.getName()));
 		if (!isMoved) {
 			System.err.println("COULDN'T MOVE FILE: " + fileToMove.getName());
 			System.exit(0);
 		}
-
 	}
 
 
 
-//	/**
-//	 * This function takes a line and speed class as parameters, and determines which action level this lines corresponding segment belongs to.
-//	 * It achieves this by looking at each and every parameter defined in TDOK2013:0347 as action level critical, and determining which action level limit has been surpassed.
-//	 * The highest surpassed limit is the class for this segment.
-//	 * @param line - measurement file line, a sequence of measurement values separated by a semi-colon
-//	 * @param speedClass - the string corresponding to the speed class: "H5" to "H0"
-//	 * @return returns the corresponding SegEv action level byte constant
-//	 */
-//	public static byte[] classifyMeasurementLineSegment(String line) {
-//		String[] fields = line.split(";");	
-//		return classifyMeasurementLine(fields);
-//	}
 
 }

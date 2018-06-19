@@ -2,6 +2,12 @@ package classifier;
 
 import java.util.ArrayList;
 
+/**
+ * Corridor class.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class Corridor {
 
 	
@@ -9,10 +15,15 @@ public class Corridor {
 	
 	
 	public Corridor(ClassifierProfile classifierProfile) {
-		// TODO Auto-generated constructor stub
-		int i = 0;
+		
 	}
 
+	
+	/**
+	 * retrieves a given track object. If there is no track by that name, create and return a new track object.
+	 * @param track
+	 * @return
+	 */
 	public Track getTrack(String track) {
 		for(Track t : tracks) {
 			if(t.name.equals(track)) {
@@ -25,19 +36,28 @@ public class Corridor {
 	}
 
 
+	/**
+	 * Returns a given segment.
+	 * @param track
+	 * @param km
+	 * @param m
+	 * @return
+	 */
 	public Segment getSegment(String track, int km, double m) {
-		// TODO Auto-generated method stub
 		return getTrack(track).getKilometer(km).getSegment(m);
 	}
 	
 	
 
 	
-	
+	/**
+	 * Track class. Corresponds to a certain track in a corridor.
+	 * @author Henrik Ronnholm
+	 *
+	 */
 	public class Track{
 
-		private String name;
-		
+		private String name;		
 		Kilometer[] kilometers = new Kilometer[2000];
 		
 		public Track(String track) {

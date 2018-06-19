@@ -2,31 +2,36 @@ package classifier;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
 import structs.Date;
 
+/**
+ * Corresponds to a measurement file.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class MeasurementFile {
 
 	public static final int FIELD_LENGTH = 48;
 	
 	File file;
 	
-	//###########################¤¤¤## CONSTRUCTOR ####################################################
-	
-	
+
+	/**
+	 * Constructor.
+	 * @param measurementFile
+	 */
 	public MeasurementFile(File measurementFile) {
 		this.file = measurementFile;
 		if(file == null || !file.exists()) {
 			System.err.println("Measurement file doesn't exist! : " + file.getAbsolutePath() );
 		}
 	}
+	
 
-	
-	//############################# PUBLIC METHODS ####################################################
-	
 	
 	/**
 	 * Checks that the measurement file has the correct format. This is currently only a check to see that there are 48 fields in every line, and checking that it is a .csv-file.
@@ -58,6 +63,11 @@ public class MeasurementFile {
 
 
 	
+	/**
+	 * Checks whether a corridor name matches this file.
+	 * @param corridor_name
+	 * @return
+	 */
 	public boolean matchesCorridor(String corridor_name) {
 		String[] fields = file.getName().replaceAll(".csv", "").replaceAll(".CSV","").split("_");
 		String corridor = fields[2];			
@@ -68,7 +78,13 @@ public class MeasurementFile {
 	}
 	
 	
-
+	
+	/**
+	 * Checks if this file is within a given date interval.
+	 * @param reparation_start_date
+	 * @param reparation_end_date
+	 * @return
+	 */
 	public boolean isWithinDateRange(Date reparation_start_date, Date reparation_end_date) {
 		String[] fields = file.getName().replaceAll(".csv", "").replaceAll(".CSV","").split("_");	
 																
@@ -81,12 +97,13 @@ public class MeasurementFile {
 	}
 
 
+	
+	/**
+	 * Returns a File object of this file.
+	 * @return
+	 */
 	public File getFile() {
 		return file;
 	}
 
-	
-	//############################# PRIVATE METHODS ########¤¤¤¤#######################################
-	
-	
 }

@@ -1,5 +1,11 @@
 package structs;
 
+/**
+ * Generic interval class for segment checking.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class Interval {
 
 	String[] fields;
@@ -10,16 +16,8 @@ public class Interval {
 
 	
 	public Interval(String[] fields) {
-		int i = 0;
-		//System.out.println("new interval");
 		this.fields = fields;
-		interpretIntervals();
-		//read the interval
-	}
-	
-	//TODO: GÖR SÅ ATT INTERVALS TOKENIZERAS OCH INTERVALLET BYGGS UPP, OCH ATT DE FÅR EN COMPARE-FUNKTION
-	public void interpretIntervals() {		
-		
+
 		String km0 = fields[1].split(" \\+ ")[0];
 		String m0 = fields[1].split(" \\+ ")[1].replaceAll(" m","").replaceAll(",[\\d]", "");	
 		String km1 = fields[2].split(" \\+ ")[0];
@@ -31,26 +29,34 @@ public class Interval {
 		this.m1 = Integer.parseInt(m1);
 		
 		corridor = fields[0];
-
 		track = fields[8];
-		
 	}
 	
-	
 
+
+	/**
+	 * Checks whether a given segment is within this interval.
+	 * @param m
+	 * @param km
+	 * @param track
+	 * @return
+	 */
 	public boolean isWithin(int m, int km, String track) {
-		System.out.println(track +" vs " + this.track);
 		if(((km0*1000) + m0) <= ((km*1000) + m) && ((km*1000) + m) <= ((km1*1000) + m1) && track.equals(this.track)) {
 				return true;
 		}
 		return false;
 	}
 	
-
-	public String[] getFields() {
-		return fields;
-	}
-
+	
+	
+	/**
+	 * Checks whether a given segment is within this interval.
+	 * @param m
+	 * @param km
+	 * @param track
+	 * @return
+	 */
 	public boolean isWithin(double m, int km, String track) {
 		if(((km0*1000) + m0) <= ((km*1000) + m) && ((km*1000) + m) <= ((km1*1000) + m1) && track.equals(this.track)) {		
 			return true;
@@ -58,6 +64,23 @@ public class Interval {
 		return false;
 	}
 
+	
+	/**
+	 * returns the fields of this interval.
+	 * @return
+	 */
+	public String[] getFields() {
+		return fields;
+	}
+
+
+
+	/**
+	 * Checks if a kilometer integer is within the track.
+	 * @param km
+	 * @param track
+	 * @return
+	 */
 	public boolean isWithin(int km, String track) {
 		if(km0 <= km && km <= km1) {
 			if(track.equals(this.track)) {
@@ -67,8 +90,8 @@ public class Interval {
 		return false;
 	}
 	
-	public String getSpeedClass() {
-		return fields[9];
-	}
+	
+	
+
 	
 }

@@ -9,7 +9,8 @@ import util.Util;
 /**
  * A class that corresponds to a certain 25 centimeter segment of train railway somewhere in Sweden. In this class, repair and measurement events are stored,
  * and it can return a classification string corresponding to a certain date.
- * @author Henra
+ * 
+ * @author Henrik Ronnholm
  *
  */
 public class Segment {
@@ -142,8 +143,7 @@ public class Segment {
 	
 	
 	
-	//#####################################################################################################################################################################
-	
+
 	
 
 	/**
@@ -327,7 +327,6 @@ public class Segment {
 	};
 
 
-	//#####################################################################################################################################################################
 
 
 	

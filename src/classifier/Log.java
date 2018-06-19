@@ -2,19 +2,20 @@ package classifier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import util.Util;
 
+
+
+/**
+ * Log file writer. An easy-to-use log that writes to a text file.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class Log {
 
-	//Add a stringbuilder to make able to print on the same line
-	
 	File folder;
 	File textfile;
 	PrintWriter writer;
@@ -25,6 +26,13 @@ public class Log {
 	
 	String destination = "";
 	
+	
+	/**
+	 * Constructor.
+	 * @param folder
+	 * @param name
+	 * @param alsoPrint
+	 */
 	public Log(File folder, String name, boolean alsoPrint) {
 		sysprint = alsoPrint;		
 		this.folder = folder;
@@ -43,6 +51,12 @@ public class Log {
 		displayWelcomeMsg();
 	}
 	
+	
+	
+	/**
+	 * Appends a string to the log file.
+	 * @param text
+	 */
 	public void report(String text) {
 		writer.print(text);
 		if(sysprint) { 
@@ -50,6 +64,12 @@ public class Log {
 		}		
 	}
 	
+	
+	
+	/**
+	 * Appends a string to the log file, includes new line.
+	 * @param text
+	 */
 	public void reportln(String text) {
 		writer.println(text);
 		if(sysprint) { 
@@ -57,6 +77,11 @@ public class Log {
 		}		
 	}
 	
+	
+	
+	/**
+	 * Closes the log and finalizes the log file.
+	 */
 	public void close() {
 		writer.close();
 		if(destinationSet) {
@@ -65,18 +90,31 @@ public class Log {
 	}
 
 	
+	
+	/**
+	 * Returns true if the log is OK and ready to use, otherwise false.
+	 * @return
+	 */
 	public boolean isOK() {
 		return ok;
 	}
 
+	
+	
+	/**
+	 * Set the destination of the log file.
+	 * @param dest
+	 */
 	public void setDestination(String dest) {
 		destinationSet = true;
 		destination = dest;		
 	}
 	
 	
-	//*************
-	
+
+	/**
+	 * Display a welcome message for the SPL Dataset Compiler.
+	 */
 	public void displayWelcomeMsg() {
 		reportln("");
 		reportln("######################################################################################################################################################");

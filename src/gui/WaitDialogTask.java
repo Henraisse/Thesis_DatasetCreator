@@ -9,7 +9,7 @@ import javax.swing.WindowConstants;
 
 /**
  * Displays a wait dialog.
- * @author Henra
+ * @author Henrik Ronnholm
  *
  */
 class WaitDialogTask extends SwingWorker<Void, Void> {
@@ -24,15 +24,20 @@ class WaitDialogTask extends SwingWorker<Void, Void> {
 			
 	@Override
 	protected void done() {
-		task();		
 		pleasewait.dispose();
 	}
 			
 	
+	/**
+	 * Overridable method used to perform a task (that is what you're waiting for)
+	 */
 	protected void task() {
-		
 	}
 	
+
+	/**
+	 * Opens and displays the wait dialog.
+	 */
 	private void openPleaseWaitDialog() {
 		pleasewait = new JDialog(); // modal
 		pleasewait.setPreferredSize(new Dimension(200, 100));
@@ -53,5 +58,7 @@ class WaitDialogTask extends SwingWorker<Void, Void> {
 		pleasewait.pack();
 		pleasewait.setModal(false);
 		pleasewait.setVisible(true);			
-	}		
+	}
+
+		
 }

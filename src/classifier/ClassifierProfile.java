@@ -10,6 +10,7 @@ import util.Util;
 
 /**
  * Class used to classify measurement file lines. That is, deciding if they are valid and labelling them according to a UH-limit.
+ * 
  * @author Henrik Ronnholm
  *
  */
@@ -128,6 +129,7 @@ public class ClassifierProfile {
 				int km = Util.getMeasurementLineKm(line);
 				double m = Util.getMeasurementLineM(line);
 		
+				
 				//retrieve the given segment
 				boolean valid = checkLineValidity(line_fields);
 				if(km < 0 || m > 1000.0 || !valid) {continue;}

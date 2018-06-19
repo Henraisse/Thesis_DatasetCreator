@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -13,13 +12,20 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import bis.BISBase;
 import bis.DataProcess;
 import util.Util;
 
+/**
+ * Makes up the first panel visible on the frame. Used to select some setup parameters 
+ * and boundaries and directories and other stuff.
+ * 
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class CenterPanel1 extends JPanel{
-
+	private static final long serialVersionUID = 1L;
+	
 	DataProcess process;
 	ParamFrame parent;
 	
@@ -40,20 +46,20 @@ public class CenterPanel1 extends JPanel{
     public JTextField inspectionDaysfield = new JTextField("");
     public JTextField inspectionOffsetfield = new JTextField("");
 	
-	
 	public String inputfolder = "";
 	public String outputfolder = "";
 	
+	
+	
+	/**
+	 * Constructor. Sets up the panel and all its components.
+	 * @param process
+	 * @param parent
+	 */
 	public CenterPanel1(DataProcess process, ParamFrame parent) {
 		this.parent = parent;
 		this.process = process;
-		setupPanel1();
-	}
-	
-	
-	
-	
-    private void setupPanel1() {
+
     	setLayout(null);
     	
     	JLabel inputlabel = new JLabel("Input directory");
@@ -65,9 +71,7 @@ public class CenterPanel1 extends JPanel{
     	add(chooseInput);   	
     	inputfield.setBounds(40, 50, 400, 25);    	
     	add(inputfield);
-    	
-    	
-    	
+    	   	   	
     	JLabel outputlabel = new JLabel("Output directory");
     	outputlabel.setBounds(170, 85, 225, 25);
     	outputlabel.setForeground(Color.gray);
@@ -77,9 +81,6 @@ public class CenterPanel1 extends JPanel{
     	add(chooseOutput);   	
     	outputfield.setBounds(40, 105, 400, 25);
     	add(outputfield);
-    	
-    
-    	
     	
     	JLabel bclabel = new JLabel("Inspection class:");
     	bclabel.setBounds(120, 170, 250, 25);
@@ -97,8 +98,7 @@ public class CenterPanel1 extends JPanel{
     	add(sclabel);
     	speedclass.setBounds(230, 140, 50, 25);
     	add(speedclass);
-    	
-    	
+    	 	
     	JLabel sizelabel = new JLabel("Max file size (MB):");
     	sizelabel.setBounds(110, 200, 350, 25);
     	sizelabel.setFont(new Font("Calibri", Font.PLAIN, 12));
@@ -125,8 +125,7 @@ public class CenterPanel1 extends JPanel{
     	add(offsetlabel);   	   	
     	inspectionOffsetfield.setBounds(230, 260, 50, 25);
     	add(inspectionOffsetfield);
-    	
-    	
+    	   	
     	JLabel namelabel = new JLabel("Dataset name (Optional)");
     	namelabel.setBounds(120, 300, 350, 25);
     	namelabel.setFont(new Font("Calibri", Font.PLAIN, 12));
@@ -135,10 +134,7 @@ public class CenterPanel1 extends JPanel{
     	add(namelabel);   	   	
     	namefield.setBounds(30, 320, 350, 25);
     	add(namefield);
-    	
-    	
-    	
-    	
+
 		chooseInput.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -178,7 +174,10 @@ public class CenterPanel1 extends JPanel{
 	
     
     
-    
+    /**
+     * Checks that the selected input folder is valid.
+     * @return
+     */
     public boolean isValidInputFolder() {
     	File input = new File(inputfield.getText());
     	boolean inputFolderExists = input.exists();
@@ -186,11 +185,20 @@ public class CenterPanel1 extends JPanel{
     }
     
     
+    /**
+     * Is meant to be a check of the input content folder, but I guess I'll do it later. heh.
+     * @return
+     */
 	private boolean isValidInputContentFolder() {
 		return true;
 	}
 	
 	
+	
+	/**
+	 * Create an output folder if it doesn't exist yet.
+	 * @return
+	 */
     public boolean createOutputFolder() {
         File file = new File(outputfield.getText());
         if (!file.exists()) {

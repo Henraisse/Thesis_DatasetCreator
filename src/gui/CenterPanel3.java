@@ -3,24 +3,27 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.UIManager;
-
 import bis.DataProcess;
 
 public class CenterPanel3 extends JPanel{
-	
+	private static final long serialVersionUID = 1L;
+
 	DataProcess process;
 	
 	JProgressBar progressBar = new JProgressBar(0, 100);
     public JLabel elapsedtime = new JLabel("Elapsed time: -");
     public JLabel expectedtime = new JLabel("Estimated remaining time: -");
 	
+    
+    /**
+     * Constructor.
+     * @param process
+     */
 	public CenterPanel3(DataProcess process) {		
 		this.process = process;
 		setLayout(new BorderLayout());
@@ -37,7 +40,6 @@ public class CenterPanel3 extends JPanel{
 		progresspanel.setLayout(new BoxLayout(progresspanel, BoxLayout.PAGE_AXIS));	
 		progresspanel.add(progressBar);
 		progresspanel.add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.NORTH);
-		//progresspanel.add(writtenmb);
 		progresspanel.add(elapsedtime);
 		progresspanel.add(expectedtime);
 		
@@ -51,22 +53,6 @@ public class CenterPanel3 extends JPanel{
 		boxpanel.add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.SOUTH);
 		
 		add(boxpanel, BorderLayout.NORTH);
-		
-		
-		
-				
-		
-		
-
-
-	    
-	    
-		//setBackground(Color.blue);
-	    
-	    
-
-		
-
 	}
 	
 	
@@ -91,25 +77,5 @@ public class CenterPanel3 extends JPanel{
 		return true;
 	}
 
-
-
-
-
-//	public void setwrittenMBr(int totalmbwritten, int c, int n, double currtime, int totalmb, int readmb) {		
-//	    writtenmb.setText("Written: " + (totalmbwritten) + " MB");    
-//	    
-//	    double pct_left = (double)readmb/(double)totalmb;
-//	    double tot_writ = totalmbwritten/pct_left;
-//	    double tot_time = (currtime/pct_left) - currtime;
-//
-//	    	    
-//	    elapsed.setText("Elapsed time: " + (int)tot_writ + " sek");
-//	    expectedtime.setText("Estimated remaining time: " + (int)tot_time + " sek");
-//		
-//	}
-	
-	
-	
-	
 	
 }

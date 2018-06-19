@@ -6,23 +6,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -31,19 +21,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import bis.BISBase;
 import bis.DataProcess;
-import structs.Dataset;
 import util.Util;
 
+/**
+ * Main window class of the SPL dataset compiler program.
+ * 
+ * @author Henrik Ronnholm
+ *
+ */
 public class ParamFrame extends JFrame{
-	
+	private static final long serialVersionUID = 1L;
+
 	public static final String EXIT_BUTTON_PATH = "src/resources/exit.png";
 		
 	public DataProcess process;
@@ -63,7 +52,10 @@ public class ParamFrame extends JFrame{
 	JScrollPane scroll = new JScrollPane(scrollPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	
 	
-	
+	/**
+	 * Constructor.
+	 * @param process2
+	 */
 	public ParamFrame(DataProcess process2) {
 		process = process2;
 		
@@ -81,25 +73,22 @@ public class ParamFrame extends JFrame{
 		setSize(800, 600);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);		
-		setVisible(true);		
-		
-			
-
+		setVisible(true);						
 	}
 	
 	
 	
-	
-	
+	/**
+	 * Add Swing components and setup all the panels on the frame.
+	 */
 	private void setupPanels() {	
 		actionPanel.setVisible(true);
 		actionPanel.setBackground(Color.red);		
 		actionPanel.setPreferredSize(new Dimension(80, 150));	
 		actionPanel.setLayout(new BorderLayout());
-		this.getContentPane().add(actionPanel, BorderLayout.CENTER);
-		//scrollPanel.setPreferredSize(new Dimension(500, 500));
 		actionPanel.add(scroll);
-	
+		this.getContentPane().add(actionPanel, BorderLayout.CENTER);
+			
 		buttonPanel.setVisible(true);
 		buttonPanel.setBackground(Color.yellow);	
 		buttonPanel.setPreferredSize(new Dimension(100, 50));
@@ -130,9 +119,6 @@ public class ParamFrame extends JFrame{
 		
 		centerlabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		
-
-		
 		scrollPanel.add(centerPanel1, "p1");
 		scrollPanel.add(centerPanel2, "p2");
 		scrollPanel.add(centerPanel3, "p3");
@@ -141,10 +127,8 @@ public class ParamFrame extends JFrame{
 		ParamFrame dis = this;
 		nextButton.addActionListener(new ActionListener() {
 		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		    	
-		    	if(panelcounter == 0) {		   
-		    		
+		    public void actionPerformed(ActionEvent e) {		    	
+		    	if(panelcounter == 0) {		   		    		
 		    		WaitDialogTask sw = new WaitDialogTask() {
 		    			@Override
 		    			protected void task() {
@@ -156,13 +140,10 @@ public class ParamFrame extends JFrame{
 				    		}
 		    			}
 		    		};
-		    		sw.execute();
-		    		
-		    	}
+		    		sw.execute();		    		
+		    	}		    	
 		    	
-		    	
-		    	else if(panelcounter == 1) {
-		    		
+		    	else if(panelcounter == 1) {		    		
 		    		WaitDialogTask sw = new WaitDialogTask() {
 		    			@Override
 		    			protected void task() {
@@ -181,16 +162,12 @@ public class ParamFrame extends JFrame{
 		    		};
 		    		sw.execute();		    		
 		    	}
-		    	
-		    	
-		    	
+		    		    	
 		    	else if(panelcounter == 2) {	
 		    		System.exit(0);
 		    	}
 		    	
 		    }
-
-
 		});
 		
 		prevButton.addActionListener(new ActionListener() {
@@ -198,28 +175,24 @@ public class ParamFrame extends JFrame{
 		    public void actionPerformed(ActionEvent e) {
 		    	switchPanel(-1);
 		    }
-		});
-		
+		});		
 	}
-	
-	
+
 
 	
-	
-
-	
-	
-	
+	/**
+	 * Display the calculation as done. Display text and enable buttons.
+	 */
 	public void finished() {
     	nextButton.setEnabled(true);
     	centerlabel.setText("Dataset complete.");
-    	//custom title, no icon
     	JOptionPane.showMessageDialog(this, "Dataset complete!", "Task", JOptionPane.PLAIN_MESSAGE);    	            	
     	setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 
+	
 
-	/*
+	/**
 	 * Setup the menu bar with an exit button and File and so on.
 	 */
     private void createMenuBar() {
@@ -249,7 +222,6 @@ public class ParamFrame extends JFrame{
         
         //---------------------------------------------------------
         
-        
         JMenuItem about = new JMenuItem("About", exitIcon);
         about.setMnemonic(KeyEvent.VK_E);
         about.setToolTipText("Read About-text");      
@@ -269,17 +241,12 @@ public class ParamFrame extends JFrame{
         //---------------------------------------------------------
         menubar.add(file);
         menubar.add(help);
-        setJMenuBar(menubar);
-        
-        
-
+        setJMenuBar(menubar);               
     }
 	
 	
     
-  
-    
-    /*
+    /**
      * Advance to the next panel or the previous panel, depending on the input integer.
      * @param i
      */
@@ -304,24 +271,6 @@ public class ParamFrame extends JFrame{
  
     	}	
     	repaint();    	
-    }
-    
-
-    
-    
-    
-
-
-
-    
-    
-
-    
-    
-    
-
-    
-    
-    
+    }  
     
 }
