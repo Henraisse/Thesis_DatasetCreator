@@ -67,7 +67,7 @@ public class Dataset implements PropertyChangeListener{
 		
 		
 		//Define the output file header, which will be the first line in each file;
-		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + "DATE;PRE_CLASS;POST_CLASS;OFFSET_DAYS";
+		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + Date.printSPLHeaderField() + "PRE_CLASS;POST_CLASS;OFFSET_DAYS";
 	
 		
 		if(name.equals("")) {
@@ -248,7 +248,7 @@ public class Dataset implements PropertyChangeListener{
 		String bislines = bisprofile.getSegmentBISProfileString(corridor, track, km, m);	
 		sb.append(bislines);
 		
-		sb.append(date.toStringSPL());
+		sb.append(date.toStringSPL2());
 
 		//If there is a negative kilometer or a meter offset more than 1000 meters, discard this datapoint. We cannot guarantee that it belongs.
 		if(km < 0 || m > 1000.0 ) {

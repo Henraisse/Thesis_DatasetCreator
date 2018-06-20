@@ -112,7 +112,7 @@ public class CenterPanel1 extends JPanel{
     	dayslabel.setBounds(11, 230, 350, 25);
     	dayslabel.setFont(new Font("Calibri", Font.PLAIN, 12));
     	dayslabel.setForeground(Color.gray);
-    	inspectionDaysfield.setText("40");
+    	inspectionDaysfield.setText("60");
     	add(dayslabel);   	   	
     	inspectionDaysfield.setBounds(230, 230, 50, 25);
     	add(inspectionDaysfield);
@@ -121,7 +121,7 @@ public class CenterPanel1 extends JPanel{
     	offsetlabel.setBounds(83, 260, 350, 25);
     	offsetlabel.setFont(new Font("Calibri", Font.PLAIN, 12));
     	offsetlabel.setForeground(Color.gray);
-    	inspectionOffsetfield.setText("0.125");
+    	inspectionOffsetfield.setText("0.05");
     	add(offsetlabel);   	   	
     	inspectionOffsetfield.setBounds(230, 260, 50, 25);
     	add(inspectionOffsetfield);
