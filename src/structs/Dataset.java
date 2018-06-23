@@ -67,7 +67,7 @@ public class Dataset implements PropertyChangeListener{
 		
 		
 		//Define the output file header, which will be the first line in each file;
-		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + Date.printSPLHeaderField() + "PRE_CLASS;POST_CLASS;OFFSET_DAYS";
+		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + Date.printSPLHeaderField() + "OFFSET_DAYS;PRE_CLASS;POST_CLASS";
 	
 		
 		if(name.equals("")) {
@@ -230,13 +230,8 @@ public class Dataset implements PropertyChangeListener{
 		//Define a stringbuilder for appending each part of the finished datapoint
 		StringBuilder sb = new StringBuilder();	
 
-		//For each marked measurement field bit, check for each measurement line field if it is included (bit=1), if it is, then append it to the stringbuilder.
-		for(int i = 0; i < line.length; i++) {					
-			String field = line[i];
-			if(measurementBits[i] == 1) {													
-				sb.append(field + ";");														
-			}
-		}		
+
+		
 		
 		//Extract some useful data from the line
 		String corridor = line[1];															
@@ -244,30 +239,35 @@ public class Dataset implements PropertyChangeListener{
 		int km = Integer.parseInt(line[4]);
 		double m = Double.parseDouble(line[5]);
 		
-		//Append the bis-data to the line
-		String bislines = bisprofile.getSegmentBISProfileString(corridor, track, km, m);	
-		sb.append(bislines);
-		
-		sb.append(date.toStringSPL2());
-
 		//If there is a negative kilometer or a meter offset more than 1000 meters, discard this datapoint. We cannot guarantee that it belongs.
 		if(km < 0 || m > 1000.0 ) {
 			throw new InvalidDataPointException("(OUTSIDE VALID CORRIDOR)", new Exception());
 		}
 		
+		//Append the bis-data to the line
+		String bislines = bisprofile.getSegmentBISProfileString(corridor, track, km, m);	
+
+		String[] labels = classifier.getClassLabel(date, track, km, m, dataprocess.speedclassindex);
 		
+		String preClassLabel = Segment.classifyMeasurementLine(line)[dataprocess.speedclassindex] + ";";		
+		String postClassLabel = labels[0];
+		String daysToNext = labels[1];
 		
+		//---------- APPEND THE LINE -------------
 		
-		//Append the pre-class label
-		sb.append(Segment.classifyMeasurementLine(line)[dataprocess.speedclassindex] + ";");
-		
-		
-		
-		//Retrieve the post_class label and append it to the stringbuilder
-		String labels = classifier.getClassLabel(date, track, km, m, dataprocess.speedclassindex);
-		sb.append(labels);		
-		
-		
+		//For each marked measurement field bit, check for each measurement line field if it is included (bit=1), if it is, then append it to the stringbuilder.
+		for(int i = 0; i < line.length; i++) {					
+			String field = line[i];
+			if(measurementBits[i] == 1) {													
+				sb.append(field + ";");														
+			}
+		}
+		sb.append(bislines);		
+		sb.append(date.toStringSPL2());
+		sb.append(daysToNext);		
+		sb.append(preClassLabel);	
+		sb.append(postClassLabel);	
+				
 		//Return the complete datapoint string
 		return sb.toString();
 	}

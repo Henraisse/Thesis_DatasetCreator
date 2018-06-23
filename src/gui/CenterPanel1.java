@@ -103,7 +103,7 @@ public class CenterPanel1 extends JPanel{
     	sizelabel.setBounds(110, 200, 350, 25);
     	sizelabel.setFont(new Font("Calibri", Font.PLAIN, 12));
     	sizelabel.setForeground(Color.gray);
-    	sizefield.setText("50");
+    	sizefield.setText("2000");
     	add(sizelabel);   	   	
     	sizefield.setBounds(230, 200, 50, 25);
     	add(sizefield);

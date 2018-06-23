@@ -75,7 +75,7 @@ public class Segment {
 	 * @return - classification string label for this segment and date
 	 * @throws InvalidDataPointException - in case this method cannot produce a valid classification label string
 	 */
-	public String getClassificationString(Date startdate, int maxdays, int mindays, int speedLevel) throws InvalidDataPointException{
+	public String[] getClassificationString(Date startdate, int maxdays, int mindays, int speedLevel) throws InvalidDataPointException{
 		//int optimaldays = (maxdays + mindays) / 2;
 		//int currOptimaldays = 999999;
 		boolean isEmpty = true;
@@ -83,7 +83,7 @@ public class Segment {
 		
 		//Create a stringbuilder to append class labels
 		//StringBuilder sb = new StringBuilder();
-		String classLabel = "";
+		String[] classLabel = new String[]{"", ""};
 		Date enddate = new Date(49, 12, 31);
 		
 		//Shrink the end date interval down to the nearest repair event
@@ -361,8 +361,8 @@ public class Segment {
 		}
 		
 		
-		public String getClassificationLabel(int speedLevel, int days) {
-			String ret = Byte.toString(eventTypeArray[speedLevel]) + ";" + days;
+		public String[] getClassificationLabel(int speedLevel, int days) {
+			String[] ret = new String[] {Byte.toString(eventTypeArray[speedLevel]), (Integer.toString(days) + ";")};
 			return ret;
 		}
 
