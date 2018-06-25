@@ -3,6 +3,8 @@ package classifier;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
+
 import classification.InvalidDataPointException;
 import structs.Date;
 import util.FileLineIterator;
@@ -20,6 +22,7 @@ public class ClassifierProfile {
 	
 	Corridor corridor;	
 	Log log;
+	
 			
 	ArrayList<MeasurementFile> measurementFiles = new ArrayList<MeasurementFile>();
 	ArrayList<RepairFile> repairFiles = new ArrayList<RepairFile>();
@@ -27,6 +30,8 @@ public class ClassifierProfile {
 	Date reparation_start_date;
 	Date reparation_end_date;
 
+	MFileAnalyzer alzr;
+	
 	int minMeasDays = 60;
 	int maxMeasDays = 8;
 	
@@ -37,15 +42,17 @@ public class ClassifierProfile {
 	 * @param rep_end
 	 * @param folder
 	 * @param log
+	 * @param specialLog 
 	 */
-	public ClassifierProfile(String corridor_name, Date rep_start, Date rep_end, File folder, Log log, int mDays, int mDaysOffset) {		
+	public ClassifierProfile(String corridor_name, Date rep_start, Date rep_end, File folder, Log log, int mDays, int mDaysOffset, MFileAnalyzer alzr) {		
 		this.corridor_name = corridor_name;
 		corridor = new Corridor(this);
 		reparation_start_date = rep_start;
 		reparation_end_date = rep_end;
 		
 		this.log = log;
-				
+		
+		this.alzr = alzr;
 		
 		minMeasDays = mDays - mDaysOffset;
 		maxMeasDays = mDays + mDaysOffset;
@@ -74,7 +81,7 @@ public class ClassifierProfile {
 		for (final File measurementFile : measurementFolder.listFiles()) { 									// iterate through every measurement file available in folder
 			MeasurementFile file = new MeasurementFile(measurementFile);
 			
-			boolean is_correct_format = file.hasCorrectFormat();												//check if the file has the correct format
+			boolean is_correct_format = file.hasCorrectFormat(alzr);										//check if the file has the correct format
 			boolean is_correct_corridor = file.matchesCorridor(corridor_name);									//check if the file is the same corridor
 			boolean is_correct_date = file.isWithinDateRange(reparation_start_date, reparation_end_date);		//check if the file is within the given global repair interval
 			
@@ -131,6 +138,9 @@ public class ClassifierProfile {
 			while(lines.pop()){
 				String line = lines.getLine();
 				String[] line_fields = line.split(";");
+						
+				boolean valid = checkLineValidity(line_fields);
+				if(!valid) {continue;}
 				
 				String track = Util.getMeasurementLineTrack(line);
 				int km = Util.getMeasurementLineKm(line);
@@ -138,8 +148,7 @@ public class ClassifierProfile {
 		
 				
 				//retrieve the given segment
-				boolean valid = checkLineValidity(line_fields);
-				if(km < 0 || m > 1000.0 || !valid) {continue;}
+				if(km < 0 || m > 1000.0) {continue;}
 				Segment segment = corridor.getSegment(track, km, m);
 				segment.storeMeasurementEvent(date, line_fields);	
 				cme++;
@@ -202,15 +211,22 @@ public class ClassifierProfile {
 	 * @return
 	 */
 	public boolean checkLineValidity(String[] line){
+		if(line.length < 47) {return false;}
 		//Define the mandatory field indices
-		int[] checkIndices = new int[] {9, 10, 12, 13, 15, 19, 22, 24, 29, 30, 33, 46};
+		int[] checkIndices = new int[] {9, 10, 12, 13, 15, 19, 22, 23, 29, 30, 33, 45};
 
 		//Iterate through every index of the list
 		for(int i = 0; i < checkIndices.length; i++) {
 			//open the corresponding line field and check the value
 			int index = checkIndices[i];
 			String field = line[index];
-			double value = Double.parseDouble(field);
+			double value = 0;
+			try{
+				value = Double.parseDouble(field);
+			}catch(NumberFormatException e) {
+				return false;
+			}
+			
 			
 			//If it is zero, return "FALSE" immediately
 			if(value == 0.0) {

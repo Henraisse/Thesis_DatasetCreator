@@ -86,7 +86,7 @@ public class DataProcess{
 		
 		
 		//Setup the log (system.out.print along with a written text file in the output folder)
-		log = new Log(new File(outputfolder), "mainlog.txt", true);
+		log = new Log(new File(outputfolder), "mainlog.txt", true, false);
 			
 		//check program integrity
 		log.reportln("-------------- Program integrity check --------------");
@@ -96,7 +96,7 @@ public class DataProcess{
 		
 		//scan present corridors
 		File corridorfile = new File(inputfolder + "\\corridors.txt");
-		FileLineIterator lines = new FileLineIterator(corridorfile, FileLineIterator.BYPASS_HEADER);
+		FileLineIterator lines = new FileLineIterator(corridorfile, FileLineIterator.INCLUDE_HEADER);
 		while(lines.pop()){		
 			String line = lines.getLine();
 			

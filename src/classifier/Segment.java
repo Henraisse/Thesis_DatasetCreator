@@ -226,7 +226,7 @@ public class Segment {
 		maxLevel = getParameterActionLevel(Double.parseDouble(fields[15]), sido_kortvåg, maxLevel);		/* 15 *///Sido kortvåg vänster (null);
 		maxLevel = getParameterActionLevel(Double.parseDouble(fields[19]), sido_kortvåg, maxLevel);		/* 19 *///Sido kortvåg höger (null);
 		maxLevel = getParameterIntervalActionLevel(Double.parseDouble(fields[22]), spårvidd, maxLevel); /* 22 *///Spårvidd (null);
-		maxLevel = getParameterActionLevel(Double.parseDouble(fields[24]), rälsförhöjning, maxLevel);	/* 24 *///Rälsförhöjning (null);
+		maxLevel = getParameterActionLevel(Double.parseDouble(fields[23]), rälsförhöjning, maxLevel);	/* 23 *///Rälsförhöjning (null);
 		maxLevel = getParameterActionLevel(Double.parseDouble(fields[29]), skevning_6m_bas, maxLevel);	/* 29 *///Skevning 6m bas (null);
 		maxLevel = getParameterActionLevel(Double.parseDouble(fields[30]), std_höjd, maxLevel);			/* 30 *///Std höjd (null);
 		maxLevel = getParameterActionLevel(Double.parseDouble(fields[33]), skevning_3m_bas, maxLevel);	/* 33 *///Skevning 3m bas (null);

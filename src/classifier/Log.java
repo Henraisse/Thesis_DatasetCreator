@@ -33,7 +33,7 @@ public class Log {
 	 * @param name
 	 * @param alsoPrint
 	 */
-	public Log(File folder, String name, boolean alsoPrint) {
+	public Log(File folder, String name, boolean alsoPrint, boolean printHeader) {
 		sysprint = alsoPrint;		
 		this.folder = folder;
 		folder.mkdirs();
@@ -48,7 +48,10 @@ public class Log {
 			ok = false;
 		} 	
 		
-		displayWelcomeMsg();
+		if(printHeader) {
+			displayWelcomeMsg();
+		}
+		
 	}
 	
 	

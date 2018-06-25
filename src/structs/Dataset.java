@@ -13,6 +13,8 @@ import bis.DataProcess;
 import bis.DataWriter;
 import classification.InvalidDataPointException;
 import classifier.ClassifierProfile;
+import classifier.Log;
+import classifier.MFileAnalyzer;
 import classifier.MeasurementFile;
 import classifier.Segment;
 import gui.MESPanel;
@@ -38,6 +40,8 @@ public class Dataset implements PropertyChangeListener{
 	Task progress_task;
 	ParamFrame frame;
 	DataWriter writer;
+	
+	public MFileAnalyzer alzr;
 	
 	int[] measurementBits = new int[0];
 	
@@ -65,6 +69,7 @@ public class Dataset implements PropertyChangeListener{
 		
 		measurementBits = mespanel.getMESHeaderBits();
 		
+		alzr = new MFileAnalyzer(outputfolder);
 		
 		//Define the output file header, which will be the first line in each file;
 		output_file_header = mespanel.getMESHeaderString() + bisbase.getBISHeaderString() + Date.printSPLHeaderField() + "OFFSET_DAYS;PRE_CLASS;POST_CLASS";
@@ -104,13 +109,14 @@ public class Dataset implements PropertyChangeListener{
 		dataprocess.log.reportln("-------------------------------------------------------------------------");
 	
 		BISProfile bisprofile = new BISProfile(inputfolder, corridor, bisbase);	   	//create a bisprofile for this corridor			
-		ClassifierProfile cp = new ClassifierProfile(corridor, repinterval[0], repinterval[1], new File(inputfolder), dataprocess.log, days, daysOffset);
+		ClassifierProfile cp = new ClassifierProfile(corridor, repinterval[0], repinterval[1], new File(inputfolder), dataprocess.log, days, daysOffset, alzr);
 
 		int success = 0;
 		int empty = 0;
 		int contamination = 0;
 		int dirty = 0;
 		int fail = 0;
+		int invalid = 0;
 		int islast = 0;
 
 		
@@ -124,14 +130,16 @@ public class Dataset implements PropertyChangeListener{
 			contamination += ret[2];
 			dirty += ret[3];
 			fail += ret[4];
-			islast += ret[5];
+			invalid += ret[5];
+			islast += ret[6];
 		}			
 		dataprocess.log.reportln("-----------------------");
 		dataprocess.log.reportln(success + " successful datapoints");
-		dataprocess.log.reportln(islast + " lacking subsequent measurement");
-		dataprocess.log.reportln(empty + " followed by repair event");
+		dataprocess.log.reportln(islast + " lacking any subsequent measurement");
+		dataprocess.log.reportln(empty + " lacking subsequent measurement within given interval");
 		dataprocess.log.reportln(contamination + " contaminated by contemporary repair event");
-		dataprocess.log.reportln(dirty + " with invalid position");
+		dataprocess.log.reportln(dirty + " with foreign position");
+		dataprocess.log.reportln(invalid + " with invalid data line");
 		dataprocess.log.reportln(fail + " other failed measurements");
 		dataprocess.log.reportln("");
 		int mb = writer.totalmbwritten;
@@ -165,12 +173,14 @@ public class Dataset implements PropertyChangeListener{
 	 * @param classifier
 	 */
 	private int[] extractLines(File inputfile, String corridor, BISProfile bisprofile, DataWriter writer, ClassifierProfile classifier) {	
+		dataprocess.log.reportln("Processing: " + inputfile.getName());
 		//Count every successful and failed potential datapoint extracted from this measurement file
 		int success = 0;
 		int empty = 0;
 		int contamination = 0;
 		int dirty = 0;
 		int fail = 0;
+		int invalid = 0;
 		int islast = 0;
 		
 		//Extract the date from the current file
@@ -199,13 +209,14 @@ public class Dataset implements PropertyChangeListener{
 				else if(e.getMessage().equals("(LAST MEASUREMENT)")) {islast++;}
 				else if(e.getMessage().equals("(REPAIR ACTION CONTAMINATION)")) {contamination++;}
 				else if(e.getMessage().equals("(OUTSIDE VALID CORRIDOR)")) {dirty++;}
+				else if(e.getMessage().equals("(INVALID LINE)")) {invalid++;}
 				else {
 					fail++;
 				}
 			}								
 		}
 		//When the file has been completely processed, return the file statistics
-		return new int[] {success, empty, contamination, dirty, fail, islast};
+		return new int[] {success, empty, contamination, dirty, fail, invalid, islast};
 	}
 
 
@@ -225,8 +236,10 @@ public class Dataset implements PropertyChangeListener{
 	 */
 	public String processMeasurementLine(String[] line, BISProfile bisprofile, ClassifierProfile classifier, Date date) throws InvalidDataPointException {	
 		//start by making sure that the line is valid.
-		classifier.checkLineValidity(line);
-		
+		boolean valid = classifier.checkLineValidity(line);
+		if(!valid) {
+			throw new InvalidDataPointException("(INVALID LINE)", new Exception());
+		}
 		//Define a stringbuilder for appending each part of the finished datapoint
 		StringBuilder sb = new StringBuilder();	
 
@@ -321,8 +334,14 @@ public class Dataset implements PropertyChangeListener{
          * Main task. Executed in background thread.
          */
         @Override
-        public Void doInBackground() {        	
-        	doWork();
+        public Void doInBackground() {     
+        	try {
+        		doWork();
+        	}catch(Exception c) {
+        		dataprocess.log.reportln("Exception caught! " + c.getMessage());
+        		c.printStackTrace();
+        	}
+        	
         	return null;
         }
         
@@ -348,7 +367,7 @@ public class Dataset implements PropertyChangeListener{
     				}
     			});
     		}
-    		
+    		//alzr.display();
     		frame.finished();
     						
     		//=============== END =================
