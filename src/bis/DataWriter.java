@@ -2,8 +2,10 @@ package bis;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class DataWriter {
 
@@ -40,7 +42,13 @@ public class DataWriter {
 	public void startNewWriteFile() {
 		try {						
 			String name = createNewOutputFile(printfilecounter, outputfolder);
-			writer = new BufferedWriter(new FileWriter(name, true));
+			File file = new File(name);
+			file.delete();
+			
+			FileOutputStream fos = new FileOutputStream(name);
+	        OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+	        
+			writer = new BufferedWriter(osw);
 			appendLine(output_file_header);
 
 		} catch (IOException e) {
