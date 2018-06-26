@@ -3,6 +3,8 @@ package structs;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ArrayList;
+
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -13,7 +15,6 @@ import bis.DataProcess;
 import bis.DataWriter;
 import classification.InvalidDataPointException;
 import classifier.ClassifierProfile;
-import classifier.Log;
 import classifier.MFileAnalyzer;
 import classifier.MeasurementFile;
 import classifier.Segment;
@@ -200,7 +201,7 @@ public class Dataset implements PropertyChangeListener{
 			//Try processing the line. If successful, append it to the datapoint writer and count it
 			try {
 				String datapoint = processMeasurementLine(linefields, bisprofile, classifier, date);
-				writer.appendLine("\n" + datapoint);	
+				writer.appendLine("\n" + datapoint);			
 				success++;
 				
 			//If it fails somewhere along the process, see what went wrong and note the failure
@@ -215,6 +216,8 @@ public class Dataset implements PropertyChangeListener{
 				}
 			}								
 		}
+		
+		
 		//When the file has been completely processed, return the file statistics
 		return new int[] {success, empty, contamination, dirty, fail, invalid, islast};
 	}

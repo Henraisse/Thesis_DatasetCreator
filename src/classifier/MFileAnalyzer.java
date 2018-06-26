@@ -53,6 +53,7 @@ public class MFileAnalyzer {
 	
 	private class Header{
 
+		@SuppressWarnings("unused")
 		String line;
 		int counter = 1;
 		

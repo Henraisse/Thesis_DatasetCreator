@@ -53,7 +53,9 @@ public class MeasurementFile {
 				return false;
 			}
 						
+			@SuppressWarnings("unused")
 			String fieldname = "";
+			@SuppressWarnings("unused")
 			int index = -1;
 			boolean ret = true;
 			if(!fields[9].equals("Höjd kortvåg vänster (null)") && ret){

@@ -2,9 +2,6 @@ package classifier;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
-
 import classification.InvalidDataPointException;
 import structs.Date;
 import util.FileLineIterator;
